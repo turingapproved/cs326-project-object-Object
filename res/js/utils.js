@@ -1,4 +1,4 @@
-const makeElement = (element, attributes={}, children=[]) => {
+export const makeElement = (element, attributes={}, children=[]) => {
     const node = document.createElement(element);
     for (let attr in attributes) {
         node.setAttribute(attr, attributes[attr]);
@@ -9,48 +9,44 @@ const makeElement = (element, attributes={}, children=[]) => {
     }, node);
 };
 
-const text = text => {
+export const text = text => {
     return document.createTextNode(text);
 };
 
-const div = (attributes, children) => {
+export const div = (attributes, children) => {
     return makeElement("div", attributes, children);
 };
 
-const p = (attributes, children) => {
+export const p = (attributes, children) => {
     return makeElement("p", attributes, children);
 };
 
-const button = (attributes, children) => {
+export const button = (attributes, children) => {
     return makeElement("button", attributes, children);
 };
 
-const input = (attributes, children) => {
+export const input = (attributes, children) => {
     return makeElement("input", attributes, children);
 };
 
-const applyStyles = (node, styles) => {
+export const label = (attributes, children) => {
+    return makeElement('label', attributes, children);
+};
+
+export const form = (attributes, children) => {
+    return makeElement('form', attributes, children);
+};
+
+export const applyStyles = (node, styles) => {
     for (let attr in styles) {
         node.style[attr] = styles[attr];
     }
 };
 
-const applyWidth = (node, width) => {
+export const applyWidth = (node, width) => {
     applyStyles(node, {'width': width});
 };
 
-const applyMarginTop = (node, margin) => {
+export const applyMarginTop = (node, margin) => {
     applyStyles(node, {'marginTop': margin});
-};
-
-export {
-    makeElement,
-    text,
-    div,
-    p,
-    button,
-    input,
-    applyStyles,
-    applyWidth,
-    applyMarginTop
 };
