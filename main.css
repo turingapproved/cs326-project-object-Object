@@ -48,6 +48,12 @@ body {
     margin-bottom: 1em;
 }
 
+.login-container input {
+    border-radius: 10px;
+    padding: 5px 10px;
+    border: none;
+}
+
 .login-container .shelter-login {
     background-color: lightgreen;
     border: 4px solid rgb(105, 172, 105)
@@ -73,5 +79,9 @@ body {
 }
 
 #login-form input {
-    font-size: 30px;
+    font-size: 25px;
+}
+
+#login-form button {
+    margin-top: 1em;
 }
