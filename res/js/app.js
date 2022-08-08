@@ -143,7 +143,44 @@ const App = () => {
 
     const renderSearchResultsPage = (target, search) => {
         target.innerHTML = "";
-        const results
+        let userType = state.get('userType');
+        
+        const welcomeBar = div({id: 'welcome-bar'}, [p({}, [text('Search results')])]);
+
+        let inputBar = input({type: 'text', placeholder: 'Enter drive name...'});
+        inputBar.value = search;
+        let inputButton = button(
+            {
+                class: 'btn ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn'),
+                type: 'submit'
+            }, 
+            [
+                text('Search')
+            ]
+        );
+        let inputForm = form({class: 'input-bar'}, [inputBar, inputButton]);
+        inputForm.addEventListener('submit', e => { 
+            e.preventDefault();
+            renderSearchResultsPage(target, inputBar.value); 
+        });
+
+        let results = [];
+        for (let i = 0; i < 8; ++i) {
+            const driveDisplay = div({class: 'drive-tile'}, [
+                div({class: 'title'}, [text('Loading...')]),
+                div({class: 'loc'}, [text('Loading...')]),
+                div({class: 'completion'}, [div({class: 'completion-bar' + (i === 3 ? ' finished' : '')})])
+            ]);
+            driveDisplay.addEventListener('click', e => {
+                renderDrivePage(target, 0);
+            });
+            results.push(div({class: 'drive-tile-back'}, [driveDisplay]));
+        }
+        let resultsCont = div({id: 'result-drives-cont'}, [
+            div({class: 'drive-display compact'}, results)
+        ]);
+
+        target.appendChild(div({id: 'search-results'}, [welcomeBar, inputForm, resultsCont]));
     };
 
     const renderCreateDrivePage = (target, title) => {
