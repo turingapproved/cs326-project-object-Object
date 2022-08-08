@@ -20,6 +20,12 @@ p {
     margin-bottom: 1em;
 }
 
+button[disabled] {
+    background-color: lightgray !important;
+    cursor: not-allowed;
+    border: 4px solid darkgray !important;
+}
+
 .btn {
     padding: 20px 40px;
     font-size: 40px;
@@ -79,7 +85,7 @@ p {
     margin-top: 1em;
 }
 
-.input-bar button {
+.btn.small {
     padding: 10px 20px;
     font-size: 27px;
 }
@@ -151,6 +157,14 @@ p {
     color: darkgray;
 }
 
+.shelter-info {
+    color: lightgreen;
+}
+
+.donor-info {
+    color: lightpink;
+}
+
 .drive-page .requirement {
     font-size: 25px;
     display: grid;
@@ -194,7 +208,47 @@ p {
     margin-bottom: 0em;
 }
 
-#create-form-requirements-cont button {
+.comment-section p {
+    margin: 0;
+}
+
+.comment-section .title {
+    margin-top: 1em;
+}
+
+.comment-section .name {
+    font-size: 15px;
+    color: darkgray;
+}
+
+.comment-section .comment {
+    text-align: left;
+    margin-bottom: 10px;
+    border-bottom: 1px solid darkgray;
+    padding: 5px 10px;
+}
+
+.comment-section .comment .name {
+    font-size: 15px;
+    color: darkgray;
+}
+
+.comment-section .comment .text {
+    font-size: 20px;
+    color: lightpink;
+    margin-left: 25px;
+}
+
+.comment-editor button {
     padding: 10px 20px;
     font-size: 27px;
+}
+
+.comment-editor textarea {
+    height: 80px;
+    width: 100%;
+    display: block;
+    font-size: 20px;
+    color: lightpink;
+    background-color: transparent;
 }

@@ -1,4 +1,4 @@
-import { div, p, button, text, form, label, input, applyMarginTop, applyWidth } from "./utils.js";
+import { div, p, button, text, form, label, input, applyMarginTop, applyWidth, makeElement, span } from "./utils.js";
 import { State } from "./state.js";
 
 const App = () => {
@@ -81,8 +81,9 @@ const App = () => {
         let inputBar = input({ type: 'text', placeholder: 'Enter drive name...'});
         let inputButton = button(
             {
-                class: 'btn ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn'),
-                type: 'submit'
+                class: 'btn small ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn'),
+                type: 'submit',
+                disabled: true
             }, 
             [
                 text(userType === 'shelter' ? 'Create' : 'Search')
@@ -90,6 +91,13 @@ const App = () => {
         );
         let listenerFunc = userType === 'shelter' ? renderCreateDrivePage : renderSearchResultsPage;
         let inputForm = form({class: 'input-bar'}, [inputBar, inputButton]);
+        inputBar.addEventListener('keyup', e => {
+            if (inputBar.value !== '') {
+                inputButton.disabled = false;
+            } else {
+                inputButton.disabled = true;
+            }
+        });
         inputForm.addEventListener('submit', e => { 
             e.preventDefault();
             listenerFunc(target, inputBar.value); 
@@ -124,9 +132,10 @@ const App = () => {
 
         const driveTitle = p({class: 'title'}, [text('[drive title]')]);
         const driveInfo = div({class: 'info'}, [
-            div({class: 'loc'}, [text('Location: [drive location]')]),
-            div({class: 'manager'}, [text('Manager [drive manager]')]),
-            div({class: 'contact'}, [text('Contact info: [contact information]')])
+            div({class: 'loc'}, [text('Location: '), span({ class: 'shelter-info' }, [text('[location]')])]),
+            div({class: 'manager'}, [text('Manager '), span({ class: 'shelter-info' }, [text('[manager]')])]),
+            div({class: 'contact'}, [text('Contact info: '), span({ class: 'shelter-info' }, [text('[contact info]')])]),
+            div({class: 'rating'}, [text('Rating: '), span({ class: 'donor-info' }, [text('[rating]')])])
         ]);
         const requirements = [];
         for (let i = 0; i < 6; i++) {
@@ -139,8 +148,30 @@ const App = () => {
             requirements.push(requirement);
         }
         const requirementsCont = div({class: 'requirements'}, requirements);
+        const donateButton = button({id: 'donate', class: 'btn donor-btn small'}, [text('Donate')]);
+        const comments = [];
+        for (let i = 0; i < 6; i++) {
+            const comment = div({class: 'comment'}, [
+                div({}, [
+                    p({class: 'name'}, [text('[commenter name]'), span({ class: 'shelter-info'}, [text(' [rating]')])]),
+                ]),
+                p({class: 'text'}, [text('[comment]')]),
+            ]);
+            comments.push(comment);
+        }
+        const commentsCont = div({class: 'comments'}, comments);
+        const submitButton = button({class: 'btn donor-btn', type: 'submit'}, [text('Post')]);
+        const commentForm = form({class: 'comment-editor'}, [
+            makeElement('textarea', {placeholder: 'Enter comment...'}),
+            submitButton
+        ]);
+        const commentSection = div({class: 'comment-section'}, [
+            p({class: 'title'}, [text('Comment section')]),
+            commentsCont, 
+            commentForm
+        ]);
         target.appendChild(
-            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont])
+            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont, donateButton, commentSection])
         );
     };
 
@@ -154,7 +185,7 @@ const App = () => {
         inputBar.value = search;
         let inputButton = button(
             {
-                class: 'btn ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn'),
+                class: 'btn small ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn'),
                 type: 'submit'
             }, 
             [
@@ -162,6 +193,13 @@ const App = () => {
             ]
         );
         let inputForm = form({class: 'input-bar'}, [inputBar, inputButton]);
+        inputBar.addEventListener('keyup', e => {
+            if (inputBar.value !== '') {
+                inputButton.disabled = false;
+            } else {
+                inputButton.disabled = true;
+            }
+        });
         inputForm.addEventListener('submit', e => { 
             e.preventDefault();
             renderSearchResultsPage(target, inputBar.value); 
@@ -202,7 +240,7 @@ const App = () => {
             input({type: 'number'})
         ]);
 
-        const addRowBtn = button({type: 'button', class: 'btn shelter-btn'}, [text('Add row')]);
+        const addRowBtn = button({type: 'button', class: 'btn shelter-btn small'}, [text('Add row')]);
         addRowBtn.addEventListener('click', e => {
             requirements.appendChild(input({type: 'text'}));
             requirements.appendChild(input({type: 'number'}));
