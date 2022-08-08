@@ -30,14 +30,17 @@ const App = () => {
         target.appendChild(container);
 
         shelterButton.addEventListener('click', e => {
-            renderLogInForm(target, 'shelter');
+            setStateKey('userType', 'shelter');
+            renderLogInForm(target);
         });
         donorButton.addEventListener('click', e => {
-            renderLogInForm(target, 'donor');
+            setStateKey('userType', 'donor');
+            renderLogInForm(target);
         });
     };
 
-    const renderLogInForm = (target, logInType) => {
+    const renderLogInForm = (target) => {
+        let logInType = getStateKey('userType');
         target.innerHTML = "";
         const usernameLabel = label({for: 'username'}, [text('Username: ')]);
         const usernameInput = input({type: 'text', id: 'username'});
