@@ -79,20 +79,20 @@ p {
     margin-top: 1em;
 }
 
-#home-submit-button {
+.input-bar button {
     padding: 10px 20px;
     font-size: 27px;
 }
 
-#input-bar {
+.input-bar input {
     font-size: 40px;
 }
 
-.recent-drive-cont {
+#recent-drive-cont {
     margin-top: 1.5em;
 }
 
-.recent-drives {
+.drive-display.compact {
     width: 90%;
     margin: auto;
     margin-top: 1em;
@@ -101,21 +101,21 @@ p {
     gap: 20px;
 }
 
-.recent-drives .drive-tile-back {
+.drive-display.compact .drive-tile-back {
     background: linear-gradient(lightgreen, pink);
     padding: 3px 3px;
     border-radius: 10px;
     cursor: pointer;
 }
 
-.recent-drives .drive-tile-back .drive-tile {
+.drive-display.compact .drive-tile-back .drive-tile {
     background-color: rgb(56, 60, 60);
     border-radius: inherit;
     padding: 10px 20px;
     text-align: left;
 }
 
-.recent-drives .drive-tile .loc {
+.drive-display.compact .drive-tile .loc {
     font-size: 20px;
     color: lightgray;
 }

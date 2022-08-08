@@ -78,19 +78,22 @@ const App = () => {
 
         const welcomeBar = div({id: 'welcome-bar'}, [p({}, [text('Welcome, [user]!')])]);
 
-        let inputBar = input({id: 'input-bar', type: 'text', placeholder: 'Enter drive name...'});
+        let inputBar = input({ type: 'text', placeholder: 'Enter drive name...'});
         let inputButton = button(
             {
-                id: 'home-submit-button', 
-                class: 'btn ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn')
+                class: 'btn ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn'),
+                type: 'submit'
             }, 
             [
                 text(userType === 'shelter' ? 'Create' : 'Search')
             ]
         );
         let listenerFunc = userType === 'shelter' ? renderCreateDrivePage : renderSearchResultsPage;
-        inputButton.addEventListener('click', e => { listenerFunc(target, inputBar.value); });
-        let inputForm = form({}, [inputBar, inputButton]);
+        let inputForm = form({class: 'input-bar'}, [inputBar, inputButton]);
+        inputForm.addEventListener('submit', e => { 
+            e.preventDefault();
+            listenerFunc(target, inputBar.value); 
+        });
 
         let recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
         let recentDriveChildren = [];
@@ -105,9 +108,9 @@ const App = () => {
             });
             recentDriveChildren.push(div({class: 'drive-tile-back'}, [driveDisplay]));
         }
-        let recentDriveCont = div({class: 'recent-drive-cont'}, [
+        let recentDriveCont = div({id: 'recent-drive-cont'}, [
             recentDriveTitle, 
-            div({class: 'recent-drives'}, recentDriveChildren)
+            div({class: 'drive-display compact'}, recentDriveChildren)
         ]);
 
         const homePageCont = div({class: userType + '-home home-page'}, [welcomeBar, div({}, [inputForm]), recentDriveCont]);
@@ -185,8 +188,48 @@ const App = () => {
 
     const renderCreateDrivePage = (target, title) => {
         target.innerHTML = "";
-        
-        const createTitle = p({}, [text('')])
+
+        const locInput = input({type: 'text', id: 'create-loc'});
+        const managerInput = input({type: 'text', id: 'create-manager'});
+        const contactInput = input({type: 'text', id: 'create-contact'});
+
+        const requirements = div({class: 'requirements'}, [
+            p({}, [text('Type')]),
+            p({}, [text('Quantity')]),
+            input({type: 'text'}),
+            input({type: 'number'})
+        ]);
+
+        const addRowBtn = button({type: 'button', class: 'btn shelter-btn'}, [text('Add row')]);
+        addRowBtn.addEventListener('click', e => {
+            requirements.appendChild(input({type: 'text'}));
+            requirements.appendChild(input({type: 'number'}));
+        });
+
+        const submitButton = button({class: 'btn shelter-btn'}, [text('Submit')]);
+        submitButton.addEventListener('click', e => {
+            renderHomePage(target);
+        });
+
+        target.appendChild(
+            div({}, [
+                p({}, [text(title)]),
+                form({id: 'create-drive-form'}, [
+                    label({for: 'create-loc'}, [text('Drive locations: ')]),
+                    locInput,
+                    label({for: 'create-manager'}, [text('Manger: ')]),
+                    managerInput,
+                    label({for: 'create-contact'}, [text('Contact info: ')]),
+                    contactInput,
+                    div({}, [
+                        p({}, [text('Requirements')]),
+                        requirements,
+                        addRowBtn
+                    ]),
+                    submitButton
+                ])
+            ])
+        );
     };
 
     const fetchDrive = (driveId) => {
@@ -201,11 +244,11 @@ const App = () => {
         });
     };
 
-    const fetchSearchResults(search) {
+    const fetchSearchResults = (search) => {
         return new Promise((resolve, reject) => {
             resolve();
         });
-    }
+    };
 
     return {
         render: render
