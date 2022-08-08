@@ -51,7 +51,7 @@ const App = () => {
         const passwordCont = div({}, [passwordLabel, passwordInput]);
 
         let buttonClass = logInType === 'shelter' ? 'shelter-login': 'donor-login';
-        const submit = button({type: 'submit', class: button + " login-btn"}, [text('Login')]);
+        const submit = button({type: 'submit', class: buttonClass + " login-btn"}, [text('Login')]);
 
         submit.addEventListener('click', e => {
             e.preventDefault();
