@@ -1,17 +1,13 @@
 import { div, p, button, text, form, label, input } from "./utils.js";
+import { State } from "./state.js";
 
 const App = () => {
 
-    let state = localStorage.getItem("state") || {};
-
-    const setStateKey = (key, value) => {
-        state[key] = value;
-        localStorage.setItem("state", JSON.stringify(state));
-    };
-
-    const getStateKey = (key) => {
-        return state[key] || null;
-    };
+    // Used to track app state, using the following keys
+    // userType: `shelter` or `donor`
+    // sessionId: 
+    // username:
+    const state = State();
 
     const render = (target) => {
         if (getStateKey('isAuthenticated') !== null) {
@@ -56,7 +52,15 @@ const App = () => {
         submit.addEventListener('click', e => {
             e.preventDefault();
 
+            let username = document.getElementById('username');
+            let password = document.getElementById('password');
 
+            authenticate(username.value, password.value).then((response) => {
+                renderHomePage(target);
+            });
+
+            username.value = "";
+            password.value = "";
         });
 
         const loginForm = form({class: 'login-container', id: 'login-form'}, [usernameCont, passwordCont, submit]);
@@ -65,7 +69,9 @@ const App = () => {
     };
 
     const authenticate = (username, password) => {
-        return fetch();
+        return fetch((resolve, reject) => {
+            resolve();
+        });
     };
 
     return {
