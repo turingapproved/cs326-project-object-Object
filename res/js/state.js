@@ -1,6 +1,4 @@
 export const State = () => {
-    let state = load();
-
     const setValue = (key, value) => {
         state[key] = value;
         localStorage.setItem("state", JSON.stringify(state));
@@ -18,6 +16,8 @@ export const State = () => {
         state = null;
         localStorage.removeItem("state");
     }
+
+    let state = load();
 
     return {
         set: setValue,
