@@ -93,7 +93,9 @@ const App = () => {
             [
                 text(userType === 'shelter' ? 'Create' : 'Search')
             ]
-            );
+        );
+        let listenerFunc = userType === 'shelter' ? renderCreateDrivePage : renderSearchResultsPage;
+        inputButton.addEventListener('click', e => { listenerFunc(target, inputBar.value); });
         let inputForm = form({}, [inputBar, inputButton]);
 
         let recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
@@ -149,6 +151,16 @@ const App = () => {
         return new Promise((resolve, reject) => {
             resolve();
         })
+    };
+
+    const renderSearchResultsPage = (target, search) => {
+        target.innerHTML = "";
+    };
+
+    const renderCreateDrivePage = (target, title) => {
+        target.innerHTML = "";
+        
+        const createTitle = p({}, [text('')])
     };
 
     return {
