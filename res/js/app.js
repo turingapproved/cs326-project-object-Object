@@ -100,10 +100,13 @@ const App = () => {
         let recentDriveChildren = [];
         for (let i = 0; i < 4; ++i) {
             const driveDisplay = div({class: 'drive-tile'}, [
-                div({class: 'drive-title'}, [text('Loading...')]),
-                div({class: 'drive-tile-loc'}, [text('Loading...')]),
-                div({class: 'drive-tile-completion'}, [div({class: 'drive-tile-completion-bar'})])
-            ])
+                div({class: 'title'}, [text('Loading...')]),
+                div({class: 'loc'}, [text('Loading...')]),
+                div({class: 'completion'}, [div({class: 'completion-bar' + (i === 3 ? ' finished' : '')})])
+            ]);
+            driveDisplay.addEventListener('click', e => {
+                renderDrivePage(target, 0);
+            });
             recentDriveChildren.push(div({class: 'drive-tile-back'}, [driveDisplay]));
         }
         let recentDriveCont = div({class: 'recent-drive-cont'}, [

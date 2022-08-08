@@ -76,6 +76,7 @@ p {
 
 #home-submit-button {
     padding: 10px 20px;
+    font-size: 27px;
 }
 
 #input-bar {
@@ -109,12 +110,12 @@ p {
     text-align: left;
 }
 
-.drive-tile .drive-tile-loc {
+.recent-drives .drive-tile .loc {
     font-size: 20px;
     color: lightgray;
 }
 
-.drive-tile .drive-tile-completion {
+.completion {
     width: 95%;
     margin: auto;   
     border-radius: 10px;
@@ -123,9 +124,14 @@ p {
     background-color: darkgray;
 }
 
-.drive-tile .drive-tile-completion .drive-tile-completion-bar {
+.completion-bar {
     width: 57%;
     background: linear-gradient(to left, lightgreen, pink);
     height: 100%;
     border-radius: inherit;
+}
+
+.completion-bar.finished {
+    background: goldenrod;
+    width: 100%;
 }
