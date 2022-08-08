@@ -10,7 +10,7 @@ const App = () => {
     const state = State();
 
     const render = (target) => {
-        if (getStateKey('isAuthenticated') !== null) {
+        if (state.get('isAuthenticated') === null) {
             renderLogInSplash(target);
             return;
         }
@@ -26,17 +26,17 @@ const App = () => {
         target.appendChild(container);
 
         shelterButton.addEventListener('click', e => {
-            setStateKey('userType', 'shelter');
+            state.set('userType', 'shelter');
             renderLogInForm(target);
         });
         donorButton.addEventListener('click', e => {
-            setStateKey('userType', 'donor');
+            state.set('userType', 'donor');
             renderLogInForm(target);
         });
     };
 
-    const renderLogInForm = (target) => {
-        let logInType = getStateKey('userType');
+    const renderLogInForm = (target, splashText) => {
+        let logInType = state.get('userType');
         target.innerHTML = "";
         const usernameLabel = label({for: 'username'}, [text('Username: ')]);
         const usernameInput = input({type: 'text', id: 'username'});
