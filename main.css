@@ -64,6 +64,11 @@ p {
     padding: 15px;
     text-align: center;
     font-size: 40px;
+    overflow-y: scroll;
+}
+
+#main > div {
+    margin-bottom: 3em;
 }
 
 #login-form.login-container {
@@ -134,4 +139,28 @@ p {
 .completion-bar.finished {
     background: goldenrod;
     width: 100%;
+}
+
+.drive-page {
+    padding: 0px 15px;
+}
+
+.drive-page .info {
+    text-align: left;
+    font-size: 20px;
+    color: darkgray;
+}
+
+.drive-page .requirement {
+    font-size: 25px;
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+.drive-page .requirement .title {
+    margin-bottom: 0em;
+}
+
+.drive-page .requirement .completion-cont {
+    margin-top: 1em;
 }

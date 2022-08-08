@@ -119,6 +119,38 @@ const App = () => {
         target.appendChild(homePageCont);
     };
 
+    const renderDrivePage = (target, driveId) => {
+        target.innerHTML = "";
+        applyWidth(target, "50%");
+
+        const driveTitle = p({class: 'title'}, [text('[drive title]')]);
+        const driveInfo = div({class: 'info'}, [
+            div({class: 'loc'}, [text('Location: [drive location]')]),
+            div({class: 'manager'}, [text('Manager [drive manager]')]),
+            div({class: 'contact'}, [text('Contact info: [contact information]')])
+        ]);
+        const requirements = [];
+        for (let i = 0; i < 6; i++) {
+            const requirement = div({class: 'requirement'}, [
+                p({class: 'title'}, [text('[requirement]')]),
+                div({class: 'completion-cont'}, [
+                    div({class: 'completion'}, [div({class: 'completion-bar' + (i === 3 ? ' finished' : '')})])
+                ])
+            ]);
+            requirements.push(requirement);
+        }
+        const requirementsCont = div({class: 'requirements'}, requirements);
+        target.appendChild(
+            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont])
+        );
+    };
+
+    const fetchDrive = (driveId) => {
+        return new Promise((resolve, reject) => {
+            resolve();
+        })
+    };
+
     return {
         render: render
     };
