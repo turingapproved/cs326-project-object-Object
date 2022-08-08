@@ -8,7 +8,7 @@ body {
     color: white;
 }
 
-input[type='text'], input[type='password'] {
+input[type='text'], input[type='password'], input[type='number'] {
     border-radius: 10px;
     padding: 5px 10px;
     border: none;
@@ -163,4 +163,38 @@ p {
 
 .drive-page .requirement .completion-cont {
     margin-top: 1em;
+}
+
+#create-cont {
+    padding: 15px;
+}
+
+#create-form-left-align {
+    text-align: left;
+}
+
+#create-drive-form .requirements {
+    display: grid;
+    grid-template-columns: 75% 25%;
+    width: 90%;
+    margin: auto;
+    gap: 15px;
+}
+
+#create-drive-form .requirements p {
+    margin: 0;
+}
+
+#create-form-requirements-cont {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+#create-form-requirements-cont > p {
+    margin-bottom: 0em;
+}
+
+#create-form-requirements-cont button {
+    padding: 10px 20px;
+    font-size: 27px;
 }

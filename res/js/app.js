@@ -189,6 +189,8 @@ const App = () => {
     const renderCreateDrivePage = (target, title) => {
         target.innerHTML = "";
 
+        applyWidth(target, "50%");
+
         const locInput = input({type: 'text', id: 'create-loc'});
         const managerInput = input({type: 'text', id: 'create-manager'});
         const contactInput = input({type: 'text', id: 'create-contact'});
@@ -212,16 +214,24 @@ const App = () => {
         });
 
         target.appendChild(
-            div({}, [
+            div({id: 'create-cont'}, [
                 p({}, [text(title)]),
                 form({id: 'create-drive-form'}, [
-                    label({for: 'create-loc'}, [text('Drive locations: ')]),
-                    locInput,
-                    label({for: 'create-manager'}, [text('Manger: ')]),
-                    managerInput,
-                    label({for: 'create-contact'}, [text('Contact info: ')]),
-                    contactInput,
-                    div({}, [
+                    div({id: 'create-form-left-align'}, [
+                        div({}, [
+                            label({for: 'create-loc'}, [text('Drive locations: ')]),
+                            locInput,
+                        ]),
+                        div({}, [
+                            label({for: 'create-manager'}, [text('Manger: ')]),
+                            managerInput,
+                        ]),
+                        div({}, [
+                            label({for: 'create-contact'}, [text('Contact info: ')]),
+                            contactInput,
+                        ])
+                    ]),
+                    div({id: 'create-form-requirements-cont'}, [
                         p({}, [text('Requirements')]),
                         requirements,
                         addRowBtn
