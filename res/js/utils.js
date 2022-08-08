@@ -37,6 +37,10 @@ export const form = (attributes, children) => {
     return makeElement('form', attributes, children);
 };
 
+export const span = (attributes, children) => {
+    return makeElement('span', attributes, children);
+};
+
 export const applyStyles = (node, styles) => {
     for (let attr in styles) {
         node.style[attr] = styles[attr];
