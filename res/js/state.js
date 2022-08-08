@@ -1,5 +1,5 @@
 export const State = () => {
-    let state = localStorage.getItem("state") || {};
+    let state = load();
 
     const setValue = (key, value) => {
         state[key] = value;
@@ -10,8 +10,18 @@ export const State = () => {
         return state[key] || null;
     };
 
+    const load = () => {
+        return JSON.parse(localStorage.getItem("state")) || {};
+    }
+
+    const clear = () => {
+        state = null;
+        localStorage.removeItem("state");
+    }
+
     return {
         set: setValue,
-        get: getValue
+        get: getValue,
+        clear: clear
     }
 }
