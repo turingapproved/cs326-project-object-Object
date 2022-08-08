@@ -7,11 +7,11 @@
 
 Initially the users will be faced with a login screen. They are presented with two options: one for shelters, and one for donors. Upon authenticating successfully the user will be brought to a home page that displays a welcome sign. 
 
-If the user is a shelter it will show a text `input` to make a new drive. Beneath that it will show a summary of the past 5(?) drives they have created. 
+If the user is a shelter it will show a text `input` to make a new drive. Beneath that it will show a summary of the past 4 drives they have created. 
 
-If the user is a donor it will show a text `input` to search for drives. Beneath that it will show a summary of the past 5(?) drives they have donated to. 
+If the user is a donor it will show a text `input` to search for drives. Beneath that it will show a summary of the past 4 drives they have donated to. 
 
-Clicking on one of the drives will bring up that drive's page. This will show the drive name, location, associated shelter, and the list of things they need, along with completion bars.
+Clicking on one of the drives will bring up that drive's page. This will show the drive name, location, associated shelter, and the list of things they need, along with completion bars. It will also have a section for comments. Each donor will have a rating that will display next to their name.
 
 ---
 
