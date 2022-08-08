@@ -49,4 +49,4 @@ A shelter can create a drive and specify the goods needed.
 
 ## Video
 
-[Link to video]()
+[Link to video](https://drive.google.com/file/d/186YBlv0dyj3tyadnLvcu2FdYicqoxOMx/view?usp=sharing)
