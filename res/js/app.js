@@ -1,4 +1,4 @@
-import { div, p, button, text, form, label, input } from "./utils.js";
+import { div, p, button, text, form, label, input, applyMarginTop, applyWidth } from "./utils.js";
 import { State } from "./state.js";
 
 const App = () => {
@@ -19,8 +19,8 @@ const App = () => {
     const renderLogInSplash = (target) => {
         target.innerHTML = "";
         const titlebar = p({}, [text('Log in as a')]);
-        const shelterButton = button({class: 'login-btn shelter-login'}, [text('Shelter')]);
-        const donorButton = button({class: 'login-btn donor-login'}, [text('Donor')]);
+        const shelterButton = button({class: 'btn shelter-btn'}, [text('Shelter')]);
+        const donorButton = button({class: 'btn donor-btn'}, [text('Donor')]);
         const buttonDiv = div({}, [shelterButton, text('Or'), donorButton]);
         const container = div({class: 'login-container', id: 'login-splash'}, [titlebar, buttonDiv]);
         target.appendChild(container);
@@ -46,8 +46,8 @@ const App = () => {
         const passwordInput = input({type: 'password', id: 'password'});
         const passwordCont = div({}, [passwordLabel, passwordInput]);
 
-        let buttonClass = logInType === 'shelter' ? 'shelter-login': 'donor-login';
-        const submit = button({type: 'submit', class: buttonClass + " login-btn"}, [text('Login')]);
+        let buttonClass = logInType === 'shelter' ? 'shelter-btn': 'donor-btn';
+        const submit = button({type: 'submit', class: "btn " + buttonClass}, [text('Login')]);
 
         submit.addEventListener('click', e => {
             e.preventDefault();
@@ -69,9 +69,51 @@ const App = () => {
     };
 
     const authenticate = (username, password) => {
-        return fetch((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             resolve();
         });
+    };
+
+    const renderHomePage = (target) => {
+        applyMarginTop(target, "2%");
+        applyWidth(target, "80%");
+
+        const userType = state.get('userType')
+
+        target.innerHTML = "";
+
+        const welcomeBar = div({id: 'welcome-bar'}, [p({}, [text('Welcome, [user]!')])]);
+
+        let inputBar = input({id: 'input-bar', type: 'text', placeholder: 'Enter drive name...'});
+        let inputButton = button(
+            {
+                id: 'home-submit-button', 
+                class: 'btn ' + (userType === 'shelter' ? 'shelter-btn' : 'donor-btn')
+            }, 
+            [
+                text(userType === 'shelter' ? 'Create' : 'Search')
+            ]
+            );
+        let inputForm = form({}, [inputBar, inputButton]);
+
+        let recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
+        let recentDriveChildren = [];
+        for (let i = 0; i < 4; ++i) {
+            const driveDisplay = div({class: 'drive-tile'}, [
+                div({class: 'drive-title'}, [text('Loading...')]),
+                div({class: 'drive-tile-loc'}, [text('Loading...')]),
+                div({class: 'drive-tile-completion'}, [div({class: 'drive-tile-completion-bar'})])
+            ])
+            recentDriveChildren.push(div({class: 'drive-tile-back'}, [driveDisplay]));
+        }
+        let recentDriveCont = div({class: 'recent-drive-cont'}, [
+            recentDriveTitle, 
+            div({class: 'recent-drives'}, recentDriveChildren)
+        ]);
+
+        const homePageCont = div({class: userType + '-home home-page'}, [welcomeBar, div({}, [inputForm]), recentDriveCont]);
+
+        target.appendChild(homePageCont);
     };
 
     return {

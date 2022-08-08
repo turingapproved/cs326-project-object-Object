@@ -8,45 +8,16 @@ body {
     color: white;
 }
 
-input {
+input[type='text'], input[type='password'] {
     border-radius: 10px;
     padding: 5px 10px;
     border: none;
+    font-size: 25px;
 }
 
 p {
     margin-top: 1em;
     margin-bottom: 1em;
-}
-
-#main {
-    font-family: sans-serif;
-    width: 50%;
-    margin-top: 100%;
-    height: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
-    background-color: rgb(36, 40, 40);
-    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
-    transition-property: margin-top, width;
-    transition-duration: 2s, 2s;
-    padding: 15px;
-    text-align: center;
-    font-size: 40px;
-}
-
-#login-form.login-container {
-    margin-top: 1em;
-}
-
-#login-form input {
-    font-size: 25px;
-}
-
-#login-form button {
-    margin-top: 1em;
 }
 
 .btn {
@@ -75,4 +46,86 @@ p {
 
 .btn.donor-btn:hover {
     background-color: rgb(252, 201, 210);
+}
+
+#main {
+    font-family: sans-serif;
+    width: 50%;
+    margin-top: 100%;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    background-color: rgb(36, 40, 40);
+    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    transition-property: margin-top, width;
+    transition-duration: 2s, 2s;
+    padding: 15px;
+    text-align: center;
+    font-size: 40px;
+}
+
+#login-form.login-container {
+    margin-top: 1em;
+}
+
+#login-form button {
+    margin-top: 1em;
+}
+
+#home-submit-button {
+    padding: 10px 20px;
+}
+
+#input-bar {
+    font-size: 40px;
+}
+
+.recent-drive-cont {
+    margin-top: 1.5em;
+}
+
+.recent-drives {
+    width: 90%;
+    margin: auto;
+    margin-top: 1em;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 20px;
+}
+
+.recent-drives .drive-tile-back {
+    background: linear-gradient(lightgreen, pink);
+    padding: 3px 3px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.recent-drives .drive-tile-back .drive-tile {
+    background-color: rgb(56, 60, 60);
+    border-radius: inherit;
+    padding: 10px 20px;
+    text-align: left;
+}
+
+.drive-tile .drive-tile-loc {
+    font-size: 20px;
+    color: lightgray;
+}
+
+.drive-tile .drive-tile-completion {
+    width: 95%;
+    margin: auto;   
+    border-radius: 10px;
+    height: 10px;
+    margin-top: 0.5em;
+    background-color: darkgray;
+}
+
+.drive-tile .drive-tile-completion .drive-tile-completion-bar {
+    width: 57%;
+    background: linear-gradient(to left, lightgreen, pink);
+    height: 100%;
+    border-radius: inherit;
 }
