@@ -68,12 +68,6 @@ const App = () => {
         target.appendChild(loginForm);
     };
 
-    const authenticate = (username, password) => {
-        return new Promise((resolve, reject) => {
-            resolve();
-        });
-    };
-
     const renderHomePage = (target) => {
         applyMarginTop(target, "2%");
         applyWidth(target, "80%");
@@ -147,14 +141,9 @@ const App = () => {
         );
     };
 
-    const fetchDrive = (driveId) => {
-        return new Promise((resolve, reject) => {
-            resolve();
-        })
-    };
-
     const renderSearchResultsPage = (target, search) => {
         target.innerHTML = "";
+        const results
     };
 
     const renderCreateDrivePage = (target, title) => {
@@ -162,6 +151,24 @@ const App = () => {
         
         const createTitle = p({}, [text('')])
     };
+
+    const fetchDrive = (driveId) => {
+        return new Promise((resolve, reject) => {
+            resolve();
+        })
+    };
+
+    const authenticate = (username, password) => {
+        return new Promise((resolve, reject) => {
+            resolve();
+        });
+    };
+
+    const fetchSearchResults(search) {
+        return new Promise((resolve, reject) => {
+            resolve();
+        });
+    }
 
     return {
         render: render
