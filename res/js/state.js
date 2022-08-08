@@ -9,4 +9,9 @@ export const State = () => {
     const getValue = (key) => {
         return state[key] || null;
     };
+
+    return {
+        set: setValue,
+        get: getValue
+    }
 }
