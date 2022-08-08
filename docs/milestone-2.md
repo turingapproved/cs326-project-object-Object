@@ -2,6 +2,8 @@
 
 ## Sections
 1. [User Interactions](#user-interactions)
+2. [Screenshots](#screenshots)
+3. [Video](#video)
 
 ## User Interactions*
 
@@ -16,3 +18,35 @@ Clicking on one of the drives will bring up that drive's page. This will show th
 ---
 
 **N.B. This is a revised subset of user interactions from my initial milestone. I have made this change in order to focus on completing some features rather than stubbing out many. If I find that I have extra time, I may add them back.*
+
+## Screenshots
+
+![Login](./login.png)
+
+![Login Form](./shelter-login.png)
+
+The user is greeted with a login screen initially.
+
+![Home Page](./donor-home.png)
+
+Upon logging in the user sees a home screen. Donors are prompted to search, while shelters are prompted to create drives. The most recently viewed/created drives are shown below.
+
+![Search Page](./donor-search.png)
+
+A donor may search for drives.
+
+![Drive Page](./drive.png)
+
+Clicking a drive brings up additional information.
+
+![Drive Comments](./drive-comments.png)
+
+As well as comments.
+
+![Shelter Drive Creation](./create-drive.png)
+
+A shelter can create a drive and specify the goods needed.
+
+## Video
+
+[Link to video]()
