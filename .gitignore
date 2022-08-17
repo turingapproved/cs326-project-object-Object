@@ -1,1 +1,5 @@
+# Mac OS
 .DS_Store
+
+# Node dev
+node_modules
