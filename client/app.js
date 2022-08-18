@@ -176,29 +176,8 @@ const App = () => {
         }
         const requirementsCont = div({class: 'requirements'}, requirements);
         const donateButton = button({id: 'donate', class: 'btn donor-btn small'}, [text('Donate')]);
-        const comments = [];
-        for (let i = 0; i < 6; i++) {
-            const comment = div({class: 'comment'}, [
-                div({}, [
-                    p({class: 'name'}, [text('[commenter name]'), span({ class: 'shelter-info'}, [text(' [rating]')])]),
-                ]),
-                p({class: 'text'}, [text('[comment]')]),
-            ]);
-            comments.push(comment);
-        }
-        const commentsCont = div({class: 'comments'}, comments);
-        const submitButton = button({class: 'btn donor-btn', type: 'submit'}, [text('Post')]);
-        const commentForm = form({class: 'comment-editor'}, [
-            makeElement('textarea', {placeholder: 'Enter comment...'}),
-            submitButton
-        ]);
-        const commentSection = div({class: 'comment-section'}, [
-            p({class: 'title'}, [text('Comment section')]),
-            commentsCont, 
-            commentForm
-        ]);
         target.appendChild(
-            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont, donateButton, commentSection])
+            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont, donateButton])
         );
     };
 
