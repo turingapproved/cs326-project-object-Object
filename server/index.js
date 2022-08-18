@@ -3,6 +3,7 @@ import express from 'express';
 import expressSession from 'express-session';
 import users from './users.js';
 import auth from './auth.js';
+import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -28,8 +29,10 @@ app.use(expressSession(sessionConfig));
 app.use(express.json());
 // Allow URLencoded data
 app.use(express.urlencoded({ extended: true }));
+// Logger
+app.use(logger('dev'));
 // Allow static file serving
-app.use(express.static('client'));
+app.use('/', express.static('client'));
 // Configure our authentication strategy
 auth.configure(app);
 

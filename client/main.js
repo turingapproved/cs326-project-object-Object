@@ -1,5 +1,5 @@
-import { applyMarginTop } from "../server/utils.js";
-import { App } from "../server/app.js";
+import { applyMarginTop } from "./utils.js";
+import { App } from "./app.js";
 
 const main = document.getElementById("main");
 
