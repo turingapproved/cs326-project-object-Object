@@ -3,3 +3,6 @@
 
 # Node dev
 node_modules
+
+# Dev files
+.env
