@@ -18,7 +18,7 @@ export const renderRecentlyViewed = async (donorId, driveTarget, drivePageTarget
 
 const renderDrive = async (drive, driveTarget, drivePageTarget) => {
     const completionOuter = div({class: 'completion'}, []);
-    renderCompletionBar(id, completionOuter);
+    renderDriveCompletionBar(id, completionOuter);
     const driveDisplay = div({class: 'drive-tile'}, [
         div({class: 'title'}, [text(drive.name)]),
         div({class: 'loc'}, [text(drive.location)]),
@@ -30,7 +30,7 @@ const renderDrive = async (drive, driveTarget, drivePageTarget) => {
     driveTarget.appendChild(driveDisplay);
 };
 
-const renderCompletionBar = async (id, target) => {
+const renderDriveCompletionBar = async (id, target) => {
     const res = await fetch(`/drive/${id}/completionRate`);
     const data = await res.json();
 
@@ -38,7 +38,7 @@ const renderCompletionBar = async (id, target) => {
 }
 
 const fetchDrive = async (driveId) => {
-    const res = await fetch(`/drive/${id}`);
+    const res = await fetch(`/drive/${driveId}`);
     return await res.json();
 };
 
