@@ -41,3 +41,15 @@ const fetchDrive = async (driveId) => {
     const res = await fetch(`/drive/${id}`);
     return await res.json();
 };
+
+const createDrive = async (name, location, manager, contact_info, description) => {
+    const res = await fetch('/drive', {
+        mehtod: 'POST',
+        body: JSON.stringify({ name, location, manager, description, contact_info }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const data = await res.json();
+    return data;
+};
