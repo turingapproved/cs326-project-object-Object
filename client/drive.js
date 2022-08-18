@@ -1,3 +1,21 @@
+export const renderRecentlyCreated = async (shelterId, driveTarget, drivePageTarget) => {
+    const res = await fetch(`/shelter/${shelterId}/recentlyCreated`);
+    const data = await res.json();
+
+    data.forEach(drive => {
+        renderDrive(drive, driveTarget, drivePageTarget);
+    });
+};
+
+export const renderRecentlyViewed = async (donorId, driveTarget, drivePageTarget) => {
+    const res = await fetch(`/donor/${donorId}/recentlyViewed`);
+    const data = await res.json();
+
+    data.forEach(drive => {
+        renderDrive(drive, driveTarget, drivePageTarget);
+    });
+};
+
 const renderDrive = async (drive, driveTarget, drivePageTarget) => {
     const completionOuter = div({class: 'completion'}, []);
     renderCompletionBar(id, completionOuter);
@@ -19,7 +37,7 @@ const renderCompletionBar = async (id, target) => {
     target.appendChild(div({class: 'completion-bar', 'style': `width: ${data.percent}%`}));
 }
 
-const fetchDrive = (driveId) => {
+const fetchDrive = async (driveId) => {
     const res = await fetch(`/drive/${id}`);
     return await res.json();
 };
