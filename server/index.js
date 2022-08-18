@@ -7,6 +7,7 @@ import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import drives from './drives.js';
+import requirements from './requirements.js';
 
 // We will use __dirname later on to send files back to the client.
 const __filename = fileURLToPath(import.meta.url);
@@ -99,7 +100,7 @@ app.get(
   checkLoggedIn,
   async (req, res) => {
     const { shelterId } = req.params;
-    res.json(await users.getRecentlyCreated(shelterId));
+    res.json(await users.getRecentlyCreated(shelterId)).end();
   }
 );
 
@@ -108,7 +109,7 @@ app.get(
   checkLoggedIn,
   async (req, res) => {
     const { donorId } = req.params;
-    res.json(await users.getRecentlyViewed(donorId));
+    res.json(await users.getRecentlyViewed(donorId)).end();
   }
 );
 
@@ -117,7 +118,7 @@ app.get(
   checkLoggedIn,
   async (req, res) => {
     const { driveId } = req.params;
-    return res.json(await drives.getOneById(driveId));
+    res.json(await drives.getOneById(driveId)).end();
   }
 );
 
@@ -126,7 +127,7 @@ app.get(
   checkLoggedIn,
   async (req, res) => {
     const { driveId } = req.params;
-    return res.json(await drives.getCompletionRate(driveId));
+    res.json(await drives.getCompletionRate(driveId)).end();
   }
 );
 
@@ -136,9 +137,27 @@ app.post(
   async (req, res) => {
     const { name, location, manager, description, contact_info } = req.body;
     const user = req.user;
-    res.json(await drives.create(name, location, manager, contact_info, description, user.id));
+    res.json(await drives.create(name, location, manager, contact_info, description, user.id)).end();
   }
 );
+
+app.post(
+  'drive/requirements',
+  checkLoggedIn,
+  async (req, res) => {
+    const { driveId, good, quantity } = req.body;
+    res.json(await requirements.create(driveId, good, quantity)).end();
+  }
+);
+
+app.get(
+  'drive/requirements/:reqId',
+  checkLoggedIn,
+  async (req, res) => {
+    const { reqId } = req.params
+    res.json(await requirements.getCompletionRate(reqId)).end();
+  }
+)
 
 app.get('*', (req, res) => {
   res.send('Error');
