@@ -22,16 +22,22 @@ const Users = (database) => {
         add: async (name, password, type) => {
             if (type === 'shelter') {
                 return await database.row(
-                    `INSERT INTO "user" (NAME, PASSWORD, USER_TYPE_ID) VALUES ($1, $2, ${SHELTER}) RETURNING ID`, 
-                    [name, password]
+                    `INSERT INTO "user" (NAME, PASSWORD, USER_TYPE_ID) VALUES ($1, $2, $3) RETURNING ID`, 
+                    [name, password, SHELTER]
                 );
             } else if (type === 'donor') {
                 return await database.row(
-                    `INSERT INTO "user" (NAME, PASSWORD, USER_TYPE_ID) VALUES ($1, $2, ${DONOR}) RETURNING ID`, 
-                    [name, password]
+                    `INSERT INTO "user" (NAME, PASSWORD, USER_TYPE_ID) VALUES ($1, $2, $3) RETURNING ID`, 
+                    [name, password, DONOR]
                 );
             }
             return null;
+        },
+        getRecentlyViewed: async (donorId, limit=5) => {
+            return await database.row(`SELECT * FROM DRIVE_VIEW WHERE USER_ID = $1 ORDER BY TIME DESC LIMIT $2`, [donorId, limit]);
+        },
+        getRecentlyCreated: async (shelterId, limit=5) => {
+            return await database.row(`SELECT * FROM DRIVE WHERE CREATOR_ID = $1 ORDER BY CREATED_TIME DESC LIMIT $2`, [shelterId, limit])
         }
     }
 }
