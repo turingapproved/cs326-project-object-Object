@@ -1,2 +1,2 @@
-export const SHELTER    = 1 << 0;
-export const DONOR      = 1 << 1;
+export const SHELTER    = 1;
+export const DONOR      = 2;
