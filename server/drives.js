@@ -1,4 +1,4 @@
-import database from "./db";
+import database from "./db.js";
 
 const Drives = (database) => {
     return {
@@ -28,6 +28,10 @@ const Drives = (database) => {
                 `,
                 [id]
             );
+        },
+        create: async (name, location, manager, contact_info, description, creator_id) => {
+            return await database.row(`INSERT INTO DRIVE (NAME, LOCATION, MANAGER, CONTACT_INFO, DESCRIPTION, CREATOR_ID)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING ID`, [name, location, manager, contact_info, description, creator_id]);
         }
     }
 }
