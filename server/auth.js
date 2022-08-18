@@ -9,20 +9,22 @@ const { Strategy } = passportLocal;
 // password credentials from the client. The LocalStrategy object is used to
 // authenticate a user using a username and password.
 const strategy = new Strategy(async (username, password, done) => {
-  if (!users.findUser(username)) {
-    // no such user
-    return done(null, false, { message: 'Wrong username' });
+  const user = await users.getOneByName(username);
+  if (!user) {
+    // no such user - N.B. don't tell users if the username or the password
+    // caused the rejection, this is insecure
+    return done(null, false, { message: 'Unable to log in' });
   }
-  if (!users.validatePassword(username, password)) {
+  if (user.password != password) {
     // invalid password
     // should disable logins after N messages
     // delay return to rate-limit brute-force attacks
     await new Promise((r) => setTimeout(r, 2000)); // two second delay
-    return done(null, false, { message: 'Wrong password' });
+    return done(null, false, { message: 'Unable to log in' });
   }
   // success!
   // should create a user object here, associated with a unique identifier
-  return done(null, username);
+  return done(null, user);
 });
 
 // Configure passport to use the LocalStrategy object.
@@ -32,12 +34,12 @@ passport.use(strategy);
 
 // Convert user object to a unique identifier.
 passport.serializeUser((user, done) => {
-  done(null, user);
+  done(null, user.id);
 });
 
 // Convert a unique identifier to a user object.
 passport.deserializeUser((uid, done) => {
-  done(null, uid);
+  done(null, await users.getOneById(uid));
 });
 
 export default {
