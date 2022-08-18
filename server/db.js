@@ -14,8 +14,8 @@ const { Pool } = pg;
 const Database = url => {
     let pool, client;
     
-    const query = async (queryString, args) => {
-        return await client.query(queryString, args=[]);
+    const query = async (queryString, args=[]) => {
+        return await client.query(queryString, args);
     };
 
     const rows = async (queryString, args) => {
@@ -35,12 +35,12 @@ const Database = url => {
             //
             // Replace APP_NAME with the name of your app in Heroku.
             pool = new Pool({
-              connectionString: this.url,
+              connectionString: url,
               ssl: { rejectUnauthorized: false }, // Required for Heroku connections
             });
         
             // Create the pool.
-            client = await this.pool.connect();
+            client = await pool.connect();
         },
         client: () => client,
         // Runs the query with the speciifed args, returns the resulting object
@@ -50,14 +50,14 @@ const Database = url => {
         rows: rows,
         // Like rows, but returns only the first row, unwrapping it from the list
         // returns null if list is empty
-        row: (queryString, args) => {
+        row: async (queryString, args) => {
             const res = await rows(queryString, args);
             return res[0] || null;
         }
     }
 }
 
-const database = new Database(process.env.DATABASE_URL);
+const database = Database(process.env.DATABASE_URL);
 await database.connect();
 
-export { database };
+export default database;
