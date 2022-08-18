@@ -20,7 +20,7 @@ const Drives = (database) => {
                     /
                     (
                         SELECT
-                            COALESCE(SUM(DONATION.QUANTITY), 1)
+                            COALESCE(SUM(REQUIREMENT.QUANTITY), 1)
                         FROM REQUIREMENT
                         JOIN DRIVE ON DRIVE_ID = DRIVE.ID
                         WHERE DRIVE.ID = $1
