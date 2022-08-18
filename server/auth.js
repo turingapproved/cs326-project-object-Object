@@ -38,7 +38,7 @@ passport.serializeUser((user, done) => {
 });
 
 // Convert a unique identifier to a user object.
-passport.deserializeUser((uid, done) => {
+passport.deserializeUser(async (uid, done) => {
   done(null, await users.getOneById(uid));
 });
 
