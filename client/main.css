@@ -252,3 +252,11 @@ button[disabled] {
     color: lightpink;
     background-color: transparent;
 }
+
+.splash {
+    font-size: 20px;
+}
+
+.splash.error {
+    color: lightcoral;
+}
