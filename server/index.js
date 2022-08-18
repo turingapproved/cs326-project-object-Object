@@ -114,7 +114,7 @@ app.get(
 );
 
 app.get(
-  'drive/:driveId',
+  '/drive/:driveId',
   checkLoggedIn,
   async (req, res) => {
     const { driveId } = req.params;
@@ -123,7 +123,7 @@ app.get(
 );
 
 app.get(
-  'drive/:driveId/completionRate',
+  '/drive/:driveId/completionRate',
   checkLoggedIn,
   async (req, res) => {
     const { driveId } = req.params;
@@ -132,7 +132,7 @@ app.get(
 );
 
 app.post(
-  'drive',
+  '/drive',
   checkLoggedIn,
   async (req, res) => {
     const { name, location, manager, description, contact_info } = req.body;
@@ -142,7 +142,7 @@ app.post(
 );
 
 app.post(
-  'drive/requirements',
+  '/requirement',
   checkLoggedIn,
   async (req, res) => {
     const { driveId, good, quantity } = req.body;
@@ -151,11 +151,20 @@ app.post(
 );
 
 app.get(
-  'drive/requirements/:reqId',
+  '/requirement/:reqId/completionRate',
   checkLoggedIn,
   async (req, res) => {
     const { reqId } = req.params
     res.json(await requirements.getCompletionRate(reqId)).end();
+  }
+);
+
+app.get(
+  '/requirement/:reqId',
+  checkLoggedIn,
+  async (req, res) => {
+    const { reqId } = req.params
+    res.json(await requirements.getOneById(reqId)).end();
   }
 )
 
