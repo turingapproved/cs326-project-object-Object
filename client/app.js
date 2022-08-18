@@ -1,18 +1,19 @@
 import { div, p, button, text, form, label, input, applyMarginTop, applyWidth, makeElement, span } from "./utils.js";
 import { State } from "./state.js";
+import { renderRecentlyCreated, renderRecentlyViewed } from "./drive.js";
+import { login, register } from "./auth.js";
 
 const App = () => {
 
     // Used to track app state, using the following keys
-    // userType: `shelter` or `donor`
-    // sessionId: 
-    // username:
+    // user: {name, id, type}
     const state = State();
 
     const render = (target) => {
-        if (state.get('isAuthenticated') === null) {
+        if (state.get('user') === null) {
             renderLogInSplash(target);
-            return;
+        } else {
+            renderHomePage(target);
         }
     };
 
@@ -26,17 +27,14 @@ const App = () => {
         target.appendChild(container);
 
         shelterButton.addEventListener('click', e => {
-            state.set('userType', 'shelter');
-            renderLogInForm(target);
+            renderLogInForm(target, 'shelter');
         });
         donorButton.addEventListener('click', e => {
-            state.set('userType', 'donor');
-            renderLogInForm(target);
+            renderLogInForm(target, 'donor');
         });
     };
 
-    const renderLogInForm = (target, splashText) => {
-        let logInType = state.get('userType');
+    const renderLogInForm = (target, type, splashText) => {
         target.innerHTML = "";
         const usernameLabel = label({for: 'username'}, [text('Username: ')]);
         const usernameInput = input({type: 'text', id: 'username'});
@@ -46,24 +44,56 @@ const App = () => {
         const passwordInput = input({type: 'password', id: 'password'});
         const passwordCont = div({}, [passwordLabel, passwordInput]);
 
-        let buttonClass = logInType === 'shelter' ? 'shelter-btn': 'donor-btn';
-        const submit = button({type: 'submit', class: "btn " + buttonClass}, [text('Login')]);
+        let buttonClass = type === 'shelter' ? 'shelter-btn': 'donor-btn';
+        const loginButton = button({type: 'submit', class: "btn " + buttonClass}, [text('Login')]);
+        const registerButton = button({type: 'submit', class: "btn " + buttonClass}, [text('Register')]);
 
-        submit.addEventListener('click', e => {
+        loginButton.addEventListener('click', async e => {
             e.preventDefault();
 
             let username = document.getElementById('username');
             let password = document.getElementById('password');
 
-            authenticate(username.value, password.value).then((response) => {
+            const res = await login(username.value, password.value, type);
+
+            if (!res.id) {
+                // There was an error
+                renderLogInForm(target, type, res.message)
+            } else {
+                // Success
+                state.set('user', res);
                 renderHomePage(target);
-            });
+            }
 
             username.value = "";
             password.value = "";
         });
 
-        const loginForm = form({class: 'login-container', id: 'login-form'}, [usernameCont, passwordCont, submit]);
+        registerButton.addEventListener('click', async e => {
+            e.preventDefault();
+
+            let username = document.getElementById('username');
+            let password = document.getElementById('password');
+
+            const res = await register(username.value, password.value, type);
+
+            if (!res.id) {
+                // There was an error
+                renderLogInForm(target, type, res.message)
+            } else {
+                // Success
+                state.set('user', res);
+                renderHomePage(target);
+            }
+
+            username.value = "";
+            password.value = "";
+        });
+
+        const children = [usernameCont, passwordCont, loginButton, registerButton];
+        if (splashText) children.push(p({class: 'error splash'}, [text(splashText)]));
+
+        const loginForm = form({class: 'login-container', id: 'login-form'}, children);
 
         target.appendChild(loginForm);
     };
@@ -72,11 +102,12 @@ const App = () => {
         applyMarginTop(target, "2%");
         applyWidth(target, "80%");
 
-        const userType = state.get('userType')
+        const user = state.get('user');
+        const userType = user.type;
 
         target.innerHTML = "";
 
-        const welcomeBar = div({id: 'welcome-bar'}, [p({}, [text('Welcome, [user]!')])]);
+        const welcomeBar = div({id: 'welcome-bar'}, [p({}, [text(`Welcome, ${user.name}!`)])]);
 
         let inputBar = input({ type: 'text', placeholder: 'Enter drive name...'});
         let inputButton = button(
@@ -103,22 +134,18 @@ const App = () => {
             listenerFunc(target, inputBar.value); 
         });
 
-        let recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
-        let recentDriveChildren = [];
-        for (let i = 0; i < 4; ++i) {
-            const driveDisplay = div({class: 'drive-tile'}, [
-                div({class: 'title'}, [text('Loading...')]),
-                div({class: 'loc'}, [text('Loading...')]),
-                div({class: 'completion'}, [div({class: 'completion-bar' + (i === 3 ? ' finished' : '')})])
-            ]);
-            driveDisplay.addEventListener('click', e => {
-                renderDrivePage(target, 0);
-            });
-            recentDriveChildren.push(div({class: 'drive-tile-back'}, [driveDisplay]));
+        const recentDrives = div({class: 'drive-display compact'}, []);
+
+        if (userType === 'shelter') {
+            renderRecentlyCreated(user.id, recentDrives, target);
+        } else {
+            renderRecentlyViewed(user.id, recentDrives, target);
         }
-        let recentDriveCont = div({id: 'recent-drive-cont'}, [
+
+        const recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
+        const recentDriveCont = div({id: 'recent-drive-cont'}, [
             recentDriveTitle, 
-            div({class: 'drive-display compact'}, recentDriveChildren)
+            recentDrives
         ]);
 
         const homePageCont = div({class: userType + '-home home-page'}, [welcomeBar, div({}, [inputForm]), recentDriveCont]);
@@ -278,18 +305,6 @@ const App = () => {
                 ])
             ])
         );
-    };
-
-    const fetchDrive = (driveId) => {
-        return new Promise((resolve, reject) => {
-            resolve();
-        })
-    };
-
-    const authenticate = (username, password) => {
-        return new Promise((resolve, reject) => {
-            resolve();
-        });
     };
 
     const fetchSearchResults = (search) => {
