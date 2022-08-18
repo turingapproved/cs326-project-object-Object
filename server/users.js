@@ -19,11 +19,11 @@ const Users = (database) => {
         // Adds a user, type should be either `shelter` or `donor`
         // Returns the id of the created user. Returns null if
         // type is not one of the specified strings
-        add: (name, type) => {
+        add: (name, password, type) => {
             if (type === 'shelter') {
-                return await database.row(`INSERT INTO USER (NAME, USER_TYPE_ID) VALUES ($1, ${SHELTER})`, [name]);
+                return await database.row(`INSERT INTO USER (NAME, PASSWORD, USER_TYPE_ID) VALUES ($1, $2, ${SHELTER})`, [name, password]);
             } else if (type === 'donor') {
-                return await database.row(`INSERT INTO USER (NAME, USER_TYPE_ID) VALUES ($1, ${DONOR})`, [name]);
+                return await database.row(`INSERT INTO USER (NAME, PASSWORD, USER_TYPE_ID) VALUES ($1, $2, ${DONOR})`, [name, password]);
             }
             return null;
         }
