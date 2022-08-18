@@ -6,3 +6,4 @@ node_modules
 
 # Dev files
 .env
+.vscode/launch.json
