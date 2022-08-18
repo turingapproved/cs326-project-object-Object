@@ -54,12 +54,12 @@ app.post(
   auth.authenticate('local'),
   (req, res) => {
     // handle success
-    if (req.body.userType !== req.user.user_type) {
+    if (req.body.type !== (req.user.user_type_id === 1 ? 'shelter' : 'donor')) {
       // sure the user is the kind of user they are trying to log in as
       res.status(400).json({ status: 'error', message: 'Invalid username or password'}).end();
     } else {
       const user = req.user;
-      res.json({ id: user.id, name: user.name, type: user.user_type === 1 ? 'shelter' : 'donor' }).end();
+      res.json({ id: user.id, name: user.name, type: user.user_type_id === 1 ? 'shelter' : 'donor' }).end();
     }
   },
   (err, req, res, next) => {
@@ -97,7 +97,7 @@ app.post('/auth/register', async (req, res) => {
 app.get(
   '/shelter/:shelterId/recentlyCreated', 
   checkLoggedIn,
-  (req, res) => {
+  async (req, res) => {
     const { shelterId } = req.params;
     res.json(await users.getRecentlyCreated(shelterId));
   }
@@ -106,7 +106,7 @@ app.get(
 app.get(
   '/donor/:donorId/recentlyViewed', 
   checkLoggedIn,
-  (req, res) => {
+  async (req, res) => {
     const { donorId } = req.params;
     res.json(await users.getRecentlyViewed(donorId));
   }
@@ -115,7 +115,7 @@ app.get(
 app.get(
   'drive/:driveId',
   checkLoggedIn,
-  (req, res) => {
+  async (req, res) => {
     const { driveId } = req.params;
     return res.json(await drives.getOneById(driveId));
   }
@@ -124,9 +124,19 @@ app.get(
 app.get(
   'drive/:driveId/completionRate',
   checkLoggedIn,
-  (req, res) => {
+  async (req, res) => {
     const { driveId } = req.params;
     return res.json(await drives.getCompletionRate(driveId));
+  }
+);
+
+app.post(
+  'drive',
+  checkLoggedIn,
+  async (req, res) => {
+    const { name, location, manager, description, contact_info } = req.body;
+    const user = req.user;
+    res.json(await drives.create(name, location, manager, contact_info, description, user.id));
   }
 );
 
