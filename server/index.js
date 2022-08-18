@@ -6,6 +6,7 @@ import auth from './auth.js';
 import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import drives from './drives.js';
 
 // We will use __dirname later on to send files back to the client.
 const __filename = fileURLToPath(import.meta.url);
@@ -58,7 +59,7 @@ app.post(
       res.status(400).json({ status: 'error', message: 'Invalid username or password'}).end();
     } else {
       const user = req.user;
-      res.json({ id: user.id, username: user.name, type: user.user_type === 1 ? 'shelter' : 'donor' }).end();
+      res.json({ id: user.id, name: user.name, type: user.user_type === 1 ? 'shelter' : 'donor' }).end();
     }
   },
   (err, req, res, next) => {
@@ -87,11 +88,47 @@ app.post('/auth/register', async (req, res) => {
     const uid = await users.add(username, password, userType);
     if (uid) {
       auth.authenticate('local');
-      return res.json({ id: uid, type: userType });
+      return res.json({ id: uid, name: username, type: userType });
     }
   }
   res.end();
 });
+
+app.get(
+  '/shelter/:shelterId/recentlyCreated', 
+  checkLoggedIn,
+  (req, res) => {
+    const { shelterId } = req.params;
+    res.json(await users.getRecentlyCreated(shelterId));
+  }
+);
+
+app.get(
+  '/donor/:donorId/recentlyViewed', 
+  checkLoggedIn,
+  (req, res) => {
+    const { donorId } = req.params;
+    res.json(await users.getRecentlyViewed(donorId));
+  }
+);
+
+app.get(
+  'drive/:driveId',
+  checkLoggedIn,
+  (req, res) => {
+    const { driveId } = req.params;
+    return res.json(await drives.getOneById(driveId));
+  }
+);
+
+app.get(
+  'drive/:driveId/completionRate',
+  checkLoggedIn,
+  (req, res) => {
+    const { driveId } = req.params;
+    return res.json(await drives.getCompletionRate(driveId));
+  }
+);
 
 app.get('*', (req, res) => {
   res.send('Error');
