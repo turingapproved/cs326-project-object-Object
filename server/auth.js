@@ -15,7 +15,7 @@ const strategy = new Strategy(async (username, password, done) => {
     // caused the rejection, this is insecure
     return done(null, false, { message: 'Unable to log in' });
   }
-  if (user.password != password) {
+  if (user.password !== password) {
     // invalid password
     // should disable logins after N messages
     // delay return to rate-limit brute-force attacks
@@ -48,7 +48,7 @@ export default {
     app.use(passport.session());
   },
 
-  authenticate: (domain, where) => {
-    return passport.authenticate(domain, where);
-  },
+  authenticate: (domain) => {
+    return passport.authenticate(domain, { failWithError: true });
+  }
 };

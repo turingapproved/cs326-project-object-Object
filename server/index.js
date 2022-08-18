@@ -39,48 +39,51 @@ function checkLoggedIn(req, res, next) {
     // If we are authenticated, run the next route.
     next();
   } else {
-    // Otherwise, redirect to the login page.
-    res.redirect('/login');
+    // Otherwise, send an error
+    res.status(403).json({ status: 'unauthorized' }).end();
   }
 }
 
-// Handle the URL /login (just output the login.html file).
-app.get('/login', (req, res) =>
-  res.sendFile('client/login.html', { root: __dirname })
-);
-
-// Handle post data from the login.html form.
+// Handle post request
 app.post(
-  '/login',
-  auth.authenticate('local', {
-    // use username/password authentication
-    successRedirect: '/index.html', // when we login, go to /private
-    failureRedirect: '/login', // otherwise, back to login
-  })
+  '/auth/login',
+  auth.authenticate('local'),
+  (req, res) => {
+    // handle success
+    const user = req.user;
+    res.json({ id: user.id, type: user.user_type === 1 ? 'shelter' : 'donor' }).end();
+  },
+  (err, req, res, next) => {
+    // handle failure (bad request)
+    res.status(400).json({ status: 'error', message: 'Invalid username or password'}).end();
+  }
 );
 
-// Handle logging out (takes us back to the login page).
-app.get('/logout', (req, res) => {
+// Handle logging out
+app.get('/auth/logout', (req, res) => {
   req.logout(); // Logs us out!
-  res.redirect('/login'); // back to login
+  res.json({ status: 'success' }).end();
 });
-
-// Register URL
-app.get('/register', (req, res) =>
-  res.sendFile('client/register.html', { root: __dirname })
-);
 
 // Like login, but add a new user and password IFF one doesn't exist already.
 // If we successfully add a new user, go to /login, else, back to /register.
 // Use req.body to access data (as in, req.body['username']).
 // Use res.redirect to change URLs.
-app.post('/register', (req, res) => {
-  const { username, password } = req.body;
-  if (users.addUser(username, password)) {
-    res.redirect('/login');
+app.post('/auth/register', async (req, res) => {
+  const { username, password, user_type } = req.body;
+  const user = await users.getOneByName(username);
+  if (user) {
+    // Bad request
+    res.status(400).json({ status: 'unable to register'});
   } else {
-    res.redirect('/register');
+    const uid = await users.add(username, password, user_type);
+    if (uid) {
+      auth.authenticate('local');
+      return res.json({ status: 'success' });
+    }
+    
   }
+  res.end();
 });
 
 app.get('*', (req, res) => {
