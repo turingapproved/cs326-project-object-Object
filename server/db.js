@@ -31,7 +31,11 @@ const Database = url => {
             // Create the pool.
             client = await this.pool.connect();
         },
-        client: () => client
+        client: () => client,
+        // Runs the query with the speciifed args, returns the resulting object
+        query: async (queryString, args) => {
+            return await client.query(queryString, args);
+        }
     }
 }
 
