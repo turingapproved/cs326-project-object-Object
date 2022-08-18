@@ -53,8 +53,13 @@ app.post(
   auth.authenticate('local'),
   (req, res) => {
     // handle success
-    const user = req.user;
-    res.json({ id: user.id, type: user.user_type === 1 ? 'shelter' : 'donor' }).end();
+    if (req.body.userType !== req.user.user_type) {
+      // sure the user is the kind of user they are trying to log in as
+      res.status(400).json({ status: 'error', message: 'Invalid username or password'}).end();
+    } else {
+      const user = req.user;
+      res.json({ id: user.id, username: user.name, type: user.user_type === 1 ? 'shelter' : 'donor' }).end();
+    }
   },
   (err, req, res, next) => {
     // handle failure (bad request)
@@ -73,18 +78,17 @@ app.get('/auth/logout', (req, res) => {
 // Use req.body to access data (as in, req.body['username']).
 // Use res.redirect to change URLs.
 app.post('/auth/register', async (req, res) => {
-  const { username, password, user_type } = req.body;
+  const { username, password, userType } = req.body;
   const user = await users.getOneByName(username);
   if (user) {
     // Bad request
     res.status(400).json({ status: 'unable to register'});
   } else {
-    const uid = await users.add(username, password, user_type);
+    const uid = await users.add(username, password, userType);
     if (uid) {
       auth.authenticate('local');
-      return res.json({ status: 'success' });
+      return res.json({ id: uid, type: userType });
     }
-    
   }
   res.end();
 });
