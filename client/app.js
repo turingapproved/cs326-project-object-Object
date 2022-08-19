@@ -1,6 +1,6 @@
 import { div, p, button, text, form, label, input, applyMarginTop, applyWidth, makeElement, span } from "./utils.js";
 import { State } from "./state.js";
-import { renderRecentlyCreated, renderRecentlyViewed } from "./drive.js";
+import { renderRecentlyCreated, renderRecentlyViewed, createDrive } from "./drive.js";
 import { login, register } from "./auth.js";
 
 const App = () => {
@@ -230,16 +230,17 @@ const App = () => {
         target.appendChild(div({id: 'search-results'}, [welcomeBar, inputForm, resultsCont]));
     };
 
-    const renderCreateDrivePage = (target, title) => {
+    const renderCreateDrivePage = async (target, title) => {
         target.innerHTML = "";
 
         applyWidth(target, "50%");
+        applyMarginTop(target, "5%");
 
         const locInput = input({type: 'text', id: 'create-loc'});
         const managerInput = input({type: 'text', id: 'create-manager'});
         const contactInput = input({type: 'text', id: 'create-contact'});
 
-        const requirements = div({class: 'requirements'}, [
+        const requirementsElem = div({class: 'requirements'}, [
             p({}, [text('Type')]),
             p({}, [text('Quantity')]),
             input({type: 'text'}),
@@ -248,12 +249,23 @@ const App = () => {
 
         const addRowBtn = button({type: 'button', class: 'btn shelter-btn small'}, [text('Add row')]);
         addRowBtn.addEventListener('click', e => {
-            requirements.appendChild(input({type: 'text'}));
-            requirements.appendChild(input({type: 'number'}));
+            requirementsElem.appendChild(input({type: 'text'}));
+            requirementsElem.appendChild(input({type: 'number'}));
         });
 
         const submitButton = button({class: 'btn shelter-btn'}, [text('Submit')]);
-        submitButton.addEventListener('click', e => {
+        submitButton.addEventListener('click', async e => {
+            e.preventDefault();
+            const requirements = [];
+            // The requirements don't have any strucutral divs, so we need
+            // to loop over every set of two (they only come in pairs)
+            for (let i = 1; i < requirementsElem.children.length / 2; i++) {
+                requirements.push({
+                    good: requirementsElem.children[2 * i].value,
+                    quantity: requirementsElem.children[2 * i + 1].value
+                })
+            }
+            await createDrive(title, locInput.value, managerInput.value, contactInput.value, requirements);
             renderHomePage(target);
         });
 
@@ -277,7 +289,7 @@ const App = () => {
                     ]),
                     div({id: 'create-form-requirements-cont'}, [
                         p({}, [text('Requirements')]),
-                        requirements,
+                        requirementsElem,
                         addRowBtn
                     ]),
                     submitButton
@@ -292,8 +304,15 @@ const App = () => {
         });
     };
 
+    const logout = (target) => {
+        state.clear();
+        renderLogInSplash(target);
+    }
+
     return {
-        render: render
+        render: render,
+        home: renderHomePage,
+        logout: logout
     };
 }
 

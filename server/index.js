@@ -137,7 +137,7 @@ app.post(
   async (req, res) => {
     const { name, location, manager, description, contact_info } = req.body;
     const user = req.user;
-    res.json(await drives.create(name, location, manager, contact_info, description, user.id)).end();
+    res.json(await drives.create(name, location, manager, contact_info, user.id)).end();
   }
 );
 

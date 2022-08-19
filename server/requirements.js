@@ -27,7 +27,7 @@ const Requirements = (database) => {
         create: async (driveId, good, quantity) => {
             return await database.row('INSERT INTO REQUIREMENT (DRIVE_ID, GOOD, QUANTITY) VALUES ($1, $2, $3) RETURNING ID', [driveId, good, quantity]);
         },
-        getOneById: (id) => {
+        getOneById: async (id) => {
             return await database.row('SEELCT * FROM REQUIREMENT WHERE ID = $1', [id]);
         }
     }

@@ -13,7 +13,7 @@ export const State = () => {
     }
 
     const clear = () => {
-        state = null;
+        state = {};
         localStorage.removeItem("state");
     }
 

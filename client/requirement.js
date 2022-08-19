@@ -1,4 +1,4 @@
-export const createRequirement = (driveId, good, quantity) => {
+export const createRequirement = async (driveId, good, quantity) => {
     const res = await fetch (`/requirement`, {
         method: 'POST',
         body: JSON.stringify({ good, quantity, driveId }),
@@ -9,12 +9,16 @@ export const createRequirement = (driveId, good, quantity) => {
     return await res.json();
 };
 
+export const renderRequirement = (id, target) => {
+
+};
+
 const renderRequirementCompletionBar = async (id, target) => {
     const res = await fetch(`/requirement/${id}/completionRate`);
     const data = await res.json();
 
     target.appendChild(div({class: 'completion-bar', 'style': `width: ${data.percent}%`}));
-}
+};
 
 const fetchRequirement = async (reqId) => {
     const res = await fetch(`/requirement/${reqId}`);

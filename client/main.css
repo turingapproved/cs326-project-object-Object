@@ -36,6 +36,10 @@ button[disabled] {
     border: 4px solid rgb(157, 157, 157); 
 }
 
+.btn:hover {
+    background-color: rgb(215, 215, 215);
+}
+
 .btn.shelter-btn {
     background-color: lightgreen;
     border: 4px solid rgb(105, 172, 105);
@@ -259,4 +263,11 @@ button[disabled] {
 
 .splash.error {
     color: lightcoral;
+}
+
+#toolbar {
+    position: absolute;
+    bottom: 0px;
+    text-align: center;
+    width: 100%;
 }

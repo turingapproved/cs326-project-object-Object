@@ -1,3 +1,6 @@
+import { createRequirement } from "./requirement.js";
+import { div, text } from "./utils.js";
+
 export const renderRecentlyCreated = async (shelterId, driveTarget, drivePageTarget) => {
     const res = await fetch(`/shelter/${shelterId}/recentlyCreated`);
     const data = await res.json();
@@ -18,7 +21,7 @@ export const renderRecentlyViewed = async (donorId, driveTarget, drivePageTarget
 
 const renderDrive = async (drive, driveTarget, drivePageTarget) => {
     const completionOuter = div({class: 'completion'}, []);
-    renderDriveCompletionBar(id, completionOuter);
+    renderDriveCompletionBar(drive.id, completionOuter);
     const driveDisplay = div({class: 'drive-tile'}, [
         div({class: 'title'}, [text(drive.name)]),
         div({class: 'loc'}, [text(drive.location)]),
@@ -42,14 +45,20 @@ const fetchDrive = async (driveId) => {
     return await res.json();
 };
 
-const createDrive = async (name, location, manager, contact_info, description) => {
+export const createDrive = async (name, location, manager, contact_info, requirements) => {
     const res = await fetch('/drive', {
-        mehtod: 'POST',
-        body: JSON.stringify({ name, location, manager, description, contact_info }),
+        method: 'POST',
+        body: JSON.stringify({ name, location, manager, contact_info }),
         headers: {
             'Content-Type': 'application/json'
         }
     });
     const data = await res.json();
+
+    requirements.forEach(req => {
+        // Don't wait for them, try to return to main screen asap
+        createRequirement(data.id, req.good, req.quantity);
+    })
+
     return data;
 };
