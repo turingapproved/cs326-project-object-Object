@@ -34,10 +34,19 @@ const Users = (database) => {
             return null;
         },
         getRecentlyViewed: async (donorId, limit=10) => {
-            return await database.rows(`SELECT * FROM DRIVE_VIEW WHERE USER_ID = $1 ORDER BY TIME DESC LIMIT $2`, [donorId, limit]);
+            return await database.rows(`
+            SELECT 
+                DRIVE.* 
+            FROM DRIVE_VIEW 
+            JOIN DRIVE ON DRIVE_VIEW.DRIVE_ID = DRIVE.ID
+            WHERE USER_ID = $1 
+            ORDER BY TIME DESC LIMIT $2`, [donorId, limit]);
         },
         getRecentlyCreated: async (shelterId, limit=10) => {
             return await database.rows(`SELECT * FROM DRIVE WHERE CREATOR_ID = $1 ORDER BY CREATED_TIME DESC LIMIT $2`, [shelterId, limit])
+        },
+        view: async (userId, driveId) => {
+            await database.query(`INSERT INTO DRIVE_VIEW (DRIVE_ID, USER_ID) VALUES ($1, $2)`, [driveId, userId]);
         }
     }
 }
