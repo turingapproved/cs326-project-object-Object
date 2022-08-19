@@ -32,6 +32,9 @@ const Drives = (database) => {
         create: async (name, location, manager, contact_info, creator_id) => {
             return await database.row(`INSERT INTO DRIVE (NAME, LOCATION, MANAGER, CONTACT_INFO, CREATOR_ID)
             VALUES ($1, $2, $3, $4, $5) RETURNING ID`, [name, location, manager, contact_info, creator_id]);
+        },
+        search: async (query) => {
+            return await database.rows(`SELECT * FROM DRIVE WHERE NAME LIKE '%' || $1 || '%'`, [query]);
         }
     }
 }

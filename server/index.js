@@ -80,17 +80,14 @@ app.get('/auth/logout', (req, res) => {
 // Use req.body to access data (as in, req.body['username']).
 // Use res.redirect to change URLs.
 app.post('/auth/register', async (req, res) => {
-  const { username, password, userType } = req.body;
+  const { username, password, type } = req.body;
   const user = await users.getOneByName(username);
   if (user) {
     // Bad request
-    res.status(400).json({ status: 'unable to register'});
+    res.status(400).json({ status: 'error', message: 'unable to register'});
   } else {
-    const uid = await users.add(username, password, userType);
-    if (uid) {
-      auth.authenticate('local');
-      return res.json({ id: uid, name: username, type: userType });
-    }
+    await users.add(username, password, type);
+    res.json({ status: 'success' });
   }
   res.end();
 });
@@ -119,6 +116,15 @@ app.get(
   async (req, res) => {
     const { driveId } = req.params;
     res.json(await drives.getOneById(driveId)).end();
+  }
+);
+
+app.get(
+  '/search',
+  checkLoggedIn,
+  async (req, res) => {
+    const { q } = req.query;
+    res.json(await drives.search(q)).end();
   }
 );
 

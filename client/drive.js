@@ -19,7 +19,18 @@ export const renderRecentlyViewed = async (donorId, driveTarget, drivePageTarget
     });
 };
 
-const renderDrive = async (drive, driveTarget, drivePageTarget) => {
+export const renderSearchResults = async(search, target, callback) => {
+    const drives = await fetchSearchResults(search);
+
+    drives.forEach(drive => renderDrive(drive, target, callback));
+};
+
+const fetchSearchResults = async (search) => {
+    const res = await fetch('/search?q=' + encodeURI(search));
+    return await res.json();
+};
+
+const renderDrive = async (drive, driveTarget, callback) => {
     const completionOuter = div({class: 'completion'}, []);
     renderDriveCompletionBar(drive.id, completionOuter);
     const driveDisplay = div({class: 'drive-tile'}, [
@@ -28,9 +39,9 @@ const renderDrive = async (drive, driveTarget, drivePageTarget) => {
         completionOuter
     ]);
     driveDisplay.addEventListener('click', e => {
-        renderDrivePage(drivePageTarget, 0);
+        if (callback) callback(drive.id);
     });
-    driveTarget.appendChild(driveDisplay);
+    driveTarget.appendChild(div({class: 'drive-tile-back'}, [driveDisplay]));
 };
 
 const renderDriveCompletionBar = async (id, target) => {

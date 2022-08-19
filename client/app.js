@@ -1,6 +1,6 @@
 import { div, p, button, text, form, label, input, applyMarginTop, applyWidth, makeElement, span } from "./utils.js";
 import { State } from "./state.js";
-import { renderRecentlyCreated, renderRecentlyViewed, createDrive } from "./drive.js";
+import { renderRecentlyCreated, renderRecentlyViewed, createDrive, renderSearchResults } from "./drive.js";
 import { login, register } from "./auth.js";
 
 const App = () => {
@@ -77,13 +77,11 @@ const App = () => {
 
             const res = await register(username.value, password.value, type);
 
-            if (!res.id) {
+            if (res.status !== 'success') {
                 // There was an error
-                renderLogInForm(target, type, res.message)
+                renderLogInForm(target, type, res.message);
             } else {
-                // Success
-                state.set('user', res);
-                renderHomePage(target);
+                renderLogInForm(target, type, 'Registered successfully! Now log in.');
             }
 
             username.value = "";
@@ -137,9 +135,9 @@ const App = () => {
         const recentDrives = div({class: 'drive-display compact'}, []);
 
         if (userType === 'shelter') {
-            renderRecentlyCreated(user.id, recentDrives, target);
+            renderRecentlyCreated(user.id, recentDrives, (id) => renderDrivePage(target, id));
         } else {
-            renderRecentlyViewed(user.id, recentDrives, target);
+            renderRecentlyViewed(user.id, recentDrives, (id) => renderDrivePage(target, id));
         }
 
         const recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
@@ -211,21 +209,11 @@ const App = () => {
             renderSearchResultsPage(target, inputBar.value); 
         });
 
-        let results = [];
-        for (let i = 0; i < 8; ++i) {
-            const driveDisplay = div({class: 'drive-tile'}, [
-                div({class: 'title'}, [text('Loading...')]),
-                div({class: 'loc'}, [text('Loading...')]),
-                div({class: 'completion'}, [div({class: 'completion-bar' + (i === 3 ? ' finished' : '')})])
-            ]);
-            driveDisplay.addEventListener('click', e => {
-                renderDrivePage(target, 0);
-            });
-            results.push(div({class: 'drive-tile-back'}, [driveDisplay]));
-        }
-        let resultsCont = div({id: 'result-drives-cont'}, [
-            div({class: 'drive-display compact'}, results)
-        ]);
+        let driveDisplay = div({class: 'drive-display compact'});
+
+        let resultsCont = div({id: 'result-drives-cont'}, [driveDisplay]);
+
+        renderSearchResults(inputBar.value, driveDisplay, (id) => renderDrivePage(target, id))
 
         target.appendChild(div({id: 'search-results'}, [welcomeBar, inputForm, resultsCont]));
     };
@@ -296,12 +284,6 @@ const App = () => {
                 ])
             ])
         );
-    };
-
-    const fetchSearchResults = (search) => {
-        return new Promise((resolve, reject) => {
-            resolve();
-        });
     };
 
     const logout = (target) => {
