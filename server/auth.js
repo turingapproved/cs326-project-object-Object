@@ -34,11 +34,13 @@ passport.use(strategy);
 
 // Convert user object to a unique identifier.
 passport.serializeUser((user, done) => {
+  // user user id to represent user
   done(null, user.id);
 });
 
 // Convert a unique identifier to a user object.
 passport.deserializeUser(async (uid, done) => {
+  // get user with given id
   done(null, await users.getOneById(uid));
 });
 
@@ -49,6 +51,7 @@ export default {
   },
 
   authenticate: (domain) => {
+    // This allows us to catch the error and return json instead of redirecting
     return passport.authenticate(domain, { failWithError: true });
   }
 };

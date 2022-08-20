@@ -4,6 +4,8 @@ import { renderRecentlyCreated, renderRecentlyViewed, createDrive, renderSearchR
 import { login, register } from "./auth.js";
 import { renderRequirement } from "./requirement.js";
 
+
+// Handles rendering by stepping through various pages
 const App = () => {
 
     // Used to track app state, using the following keys
@@ -11,6 +13,7 @@ const App = () => {
     const state = State();
 
     const render = (target) => {
+        // If we have a user then render their home page, otherwise the login screen
         if (state.get('user') === null) {
             renderLogInSplash(target);
         } else {
@@ -18,6 +21,7 @@ const App = () => {
         }
     };
 
+    // Prompt the user to pick their type
     const renderLogInSplash = (target) => {
         target.innerHTML = "";
         const titlebar = p({}, [text('Log in as a')]);
@@ -82,6 +86,8 @@ const App = () => {
                 // There was an error
                 renderLogInForm(target, type, res.message);
             } else {
+                // they have registered, but now need to login
+                // log in is done on the same page, so just flash a message
                 renderLogInForm(target, type, 'Registered successfully! Now log in.');
             }
 
@@ -133,8 +139,10 @@ const App = () => {
             listenerFunc(target, inputBar.value); 
         });
 
+        // Don't know how many so just leave it empty
         const recentDrives = div({class: 'drive-display compact'}, []);
 
+        // Don't need the data from these, so don't wait for them
         if (userType === 'shelter') {
             renderRecentlyCreated(user.id, recentDrives, (id) => renderDrivePage(target, id));
         } else {
@@ -170,6 +178,7 @@ const App = () => {
         const requirementsCont = div({class: 'requirements'}, []);
         const deleteButton = button({id: 'delete', class: 'btn danger-btn small'}, [text('Delete')]);
         deleteButton.addEventListener('click', async e => {
+            // Wait until we delete it to show the page again
             await deleteDrive(driveId);
             renderHomePage(target);
         });
@@ -228,6 +237,7 @@ const App = () => {
 
         let resultsCont = div({id: 'result-drives-cont'}, [driveDisplay]);
 
+        // We don't the result so don't wait for it
         renderSearchResults(inputBar.value, driveDisplay, (id) => renderDrivePage(target, id))
 
         target.appendChild(div({id: 'search-results'}, [welcomeBar, inputForm, resultsCont]));
@@ -268,6 +278,7 @@ const App = () => {
                     quantity: requirementsElem.children[2 * i + 1].value
                 })
             }
+            // Wait until the drive is created to show the home page again
             await createDrive(title, locInput.value, managerInput.value, contactInput.value, requirements);
             renderHomePage(target);
         });
@@ -301,11 +312,13 @@ const App = () => {
         );
     };
 
+    // Clears all state and redisplays the login splash
     const logout = (target) => {
         state.clear();
         renderLogInSplash(target);
     }
 
+    // expose API to toolbar buttons
     return {
         render: render,
         home: renderHomePage,

@@ -4,15 +4,19 @@ import { DONOR, SHELTER } from "./user_types.js";
 /** Represents the USER table
  * 
  * Used to query one or all of the users in the table
+ * Also uses the DRIVE_VIEW table
  * */ 
 const Users = (database) => {
     return {
+        // Get all users
         getAll: async () => {
             return await database.rows('SELECT * FROM "user";');
         },
+        // Get one by its id
         getOneById: async (id) => {
             return await database.row('SELECT * FROM "user" WHERE ID = $1;', [id]);
         },
+        // Get a user by its name
         getOneByName: async (name) => {
             return await database.row('SELECT * FROM "user" WHERE NAME = $1;', [name]);
         },
@@ -33,6 +37,7 @@ const Users = (database) => {
             }
             return null;
         },
+        // Gets the users recently viewed drives, user should be a donor
         getRecentlyViewed: async (donorId, limit=10) => {
             return await database.rows(`
             SELECT
@@ -43,9 +48,11 @@ const Users = (database) => {
             GROUP BY DRIVE.ID
             ORDER BY MAX(TIME) DESC LIMIT $2`, [donorId, limit]);
         },
+        // Gets the user's recently created drives, user should be a shelter
         getRecentlyCreated: async (shelterId, limit=10) => {
             return await database.rows(`SELECT * FROM DRIVE WHERE CREATOR_ID = $1 ORDER BY CREATED_TIME DESC LIMIT $2`, [shelterId, limit])
         },
+        // Mark the given user as having viewed the given drive
         view: async (userId, driveId) => {
             await database.query(`INSERT INTO DRIVE_VIEW (DRIVE_ID, USER_ID) VALUES ($1, $2)`, [driveId, userId]);
         }

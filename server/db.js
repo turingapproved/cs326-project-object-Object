@@ -57,6 +57,7 @@ const Database = url => {
     }
 }
 
+// Initialize singleton
 const database = Database(process.env.DATABASE_URL);
 await database.connect();
 

@@ -49,6 +49,17 @@ function checkLoggedIn(req, res, next) {
   }
 }
 
+/** Routing
+ * 
+ * Six groups
+ * /auth          - authentication
+ * /shelter       - shelter information
+ * /donor         - donor information
+ * /search        - search for drives
+ * /drive         - drive related information
+ * /requirement   - requirement related information
+ */
+
 // Handle post request
 app.post(
   '/auth/login',
@@ -56,7 +67,10 @@ app.post(
   (req, res) => {
     // handle success
     if (req.body.type !== (req.user.user_type_id === 1 ? 'shelter' : 'donor')) {
-      // sure the user is the kind of user they are trying to log in as
+      // make sure the user is the kind of user they are trying to log in as
+      // The app has two different kinds of users, but stores them in one table
+      // we we need to double check that in addition to the right username
+      // and password they are the right kind of user as the UI is showing
       res.status(400).json({ status: 'error', message: 'Invalid username or password'}).end();
     } else {
       const user = req.user;
@@ -82,16 +96,19 @@ app.get('/auth/logout', (req, res) => {
 app.post('/auth/register', async (req, res) => {
   const { username, password, type } = req.body;
   const user = await users.getOneByName(username);
+  // See if user exists already
   if (user) {
     // Bad request
     res.status(400).json({ status: 'error', message: 'unable to register'});
   } else {
     await users.add(username, password, type);
+    // Return success, then ask user to log in
     res.json({ status: 'success' });
   }
   res.end();
 });
 
+// Shelters create drives
 app.get(
   '/shelter/:shelterId/recentlyCreated', 
   checkLoggedIn,
@@ -101,6 +118,7 @@ app.get(
   }
 );
 
+// Donors view them
 app.get(
   '/donor/:donorId/recentlyViewed', 
   checkLoggedIn,
@@ -111,22 +129,24 @@ app.get(
 );
 
 app.get(
-  '/drive/:driveId',
-  checkLoggedIn,
-  async (req, res) => {
-    const { driveId } = req.params;
-    // We don't need to do anything with this data, don't wait for it
-    users.view(req.user.id, driveId);
-    res.json(await drives.getOneById(driveId)).end();
-  }
-);
-
-app.get(
   '/search',
   checkLoggedIn,
   async (req, res) => {
     const { q } = req.query;
+    // Search by drive name
     res.json(await drives.search(q)).end();
+  }
+);
+
+app.get(
+  '/drive/:driveId',
+  checkLoggedIn,
+  async (req, res) => {
+    const { driveId } = req.params;
+    // Mark that the user viewed the drive
+    // We don't need to do anything with this data, don't wait for it
+    users.view(req.user.id, driveId);
+    res.json(await drives.getOneById(driveId)).end();
   }
 );
 
@@ -163,7 +183,7 @@ app.delete(
   checkLoggedIn,
   async (req, res) => {
     const { driveId } = req.params;
-    await drives.delete(driveId);
+    await drives.delete(driveId); // Returns nothing
     res.json({ status: 'success' }).end();
   }
 )
