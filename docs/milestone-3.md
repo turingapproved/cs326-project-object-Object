@@ -27,3 +27,7 @@ Information is separate from completion becuase information covers things like a
 [Shelter Helper](https://cs326-project-object-object.herokuapp.com)
 
 ## Video Demonstration
+
+Location: Google Drive
+
+Link: [Usage Video](https://drive.google.com/file/d/1G-UHr6frmQV5_-cPGPMPP0nr8k7aUyc5/view?usp=sharing)
