@@ -19,7 +19,8 @@ const Requirements = (database) => {
                             QUANTITY
                         FROM REQUIREMENT
                         WHERE REQUIREMENT.ID = $1
-                    ) AS PERCENT;
+                    ) 
+                    * 100 AS PERCENT;
                 `,
                 [requirementId]
             );
@@ -29,6 +30,9 @@ const Requirements = (database) => {
         },
         getOneById: async (id) => {
             return await database.row('SEELCT * FROM REQUIREMENT WHERE ID = $1', [id]);
+        },
+        donate: async (id, donorId, quantity) => {
+            return await database.row('INSERT INTO DONATION (DONOR_ID, REQUIREMENT_ID, QUANTITY) VALUES ($1, $2, $3) RETURNING ID', [donorId, id, quantity]);
         }
     }
 };

@@ -115,6 +115,8 @@ app.get(
   checkLoggedIn,
   async (req, res) => {
     const { driveId } = req.params;
+    // We don't need to do anything with this data, don't wait for it
+    users.view(req.user.id, driveId);
     res.json(await drives.getOneById(driveId)).end();
   }
 );
@@ -147,6 +149,15 @@ app.post(
   }
 );
 
+app.get(
+  '/drive/:driveId/requirements',
+  checkLoggedIn,
+  async (req, res) => {
+    const { driveId } = req.params;
+    res.json(await drives.getRequirements(driveId)).end();
+  }
+)
+
 app.post(
   '/requirement',
   checkLoggedIn,
@@ -164,6 +175,16 @@ app.get(
     res.json(await requirements.getCompletionRate(reqId)).end();
   }
 );
+
+app.post(
+  '/requirement/:reqId/donate',
+  checkLoggedIn,
+  async (req, res) => {
+    const { reqId } = req.params;
+    const { quantity } = req.body;
+    res.json(await requirements.donate(reqId, req.user.id, quantity)).end();
+  }
+)
 
 app.get(
   '/requirement/:reqId',

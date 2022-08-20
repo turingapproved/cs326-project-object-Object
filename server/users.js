@@ -35,12 +35,13 @@ const Users = (database) => {
         },
         getRecentlyViewed: async (donorId, limit=10) => {
             return await database.rows(`
-            SELECT 
+            SELECT
                 DRIVE.* 
             FROM DRIVE_VIEW 
             JOIN DRIVE ON DRIVE_VIEW.DRIVE_ID = DRIVE.ID
             WHERE USER_ID = $1 
-            ORDER BY TIME DESC LIMIT $2`, [donorId, limit]);
+            GROUP BY DRIVE.ID
+            ORDER BY MAX(TIME) DESC LIMIT $2`, [donorId, limit]);
         },
         getRecentlyCreated: async (shelterId, limit=10) => {
             return await database.rows(`SELECT * FROM DRIVE WHERE CREATOR_ID = $1 ORDER BY CREATED_TIME DESC LIMIT $2`, [shelterId, limit])

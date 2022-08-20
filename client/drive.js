@@ -47,11 +47,16 @@ const renderDrive = async (drive, driveTarget, callback) => {
 const renderDriveCompletionBar = async (id, target) => {
     const res = await fetch(`/drive/${id}/completionRate`);
     const data = await res.json();
-
-    target.appendChild(div({class: 'completion-bar', 'style': `width: ${data.percent}%`}));
+    target.innerHTML = "";
+    const percent = Math.min(100, parseFloat(data.percent));
+    let classString = 'completion-bar';
+    if (percent === 100) {
+        classString += ' finished';
+    }
+    target.appendChild(div({class: classString, 'style': `width: ${data.percent}%`}));
 }
 
-const fetchDrive = async (driveId) => {
+export const fetchDrive = async (driveId) => {
     const res = await fetch(`/drive/${driveId}`);
     return await res.json();
 };
@@ -72,4 +77,9 @@ export const createDrive = async (name, location, manager, contact_info, require
     })
 
     return data;
+};
+
+export const fetchDriveRequirements = async (driveId) => {
+    const res = await fetch(`drive/${driveId}/requirements`);
+    return await res.json();
 };

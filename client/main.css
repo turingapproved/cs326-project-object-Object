@@ -172,7 +172,7 @@ button[disabled] {
 .drive-page .requirement {
     font-size: 25px;
     display: grid;
-    grid-template-columns: 40% 60%;
+    grid-template-columns: 30% 45% 30%;
 }
 
 .drive-page .requirement .title {
@@ -181,6 +181,10 @@ button[disabled] {
 
 .drive-page .requirement .completion-cont {
     margin-top: 1em;
+}
+
+.drive-page .requirement .donate-input input {
+    width: 50px;
 }
 
 #create-cont {

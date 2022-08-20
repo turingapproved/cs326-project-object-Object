@@ -1,7 +1,8 @@
 import { div, p, button, text, form, label, input, applyMarginTop, applyWidth, makeElement, span } from "./utils.js";
 import { State } from "./state.js";
-import { renderRecentlyCreated, renderRecentlyViewed, createDrive, renderSearchResults } from "./drive.js";
+import { renderRecentlyCreated, renderRecentlyViewed, createDrive, renderSearchResults, fetchDrive, fetchDriveRequirements } from "./drive.js";
 import { login, register } from "./auth.js";
+import { renderRequirement } from "./requirement.js";
 
 const App = () => {
 
@@ -140,7 +141,7 @@ const App = () => {
             renderRecentlyViewed(user.id, recentDrives, (id) => renderDrivePage(target, id));
         }
 
-        const recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recent searches')]);
+        const recentDriveTitle = div({}, [text(userType === 'shelter' ? 'Recently created' : 'Recently viewed')]);
         const recentDriveCont = div({id: 'recent-drive-cont'}, [
             recentDriveTitle, 
             recentDrives
@@ -151,32 +152,34 @@ const App = () => {
         target.appendChild(homePageCont);
     };
 
-    const renderDrivePage = (target, driveId) => {
+    const renderDrivePage = async (target, driveId) => {
         target.innerHTML = "";
-        applyWidth(target, "50%");
+        applyWidth(target, "70%");
+
+        const location = span({ class: 'shelter-info' }, [text('[location]')]);
+        const manager = span({ class: 'shelter-info' }, [text('[manager]')]);
+        const contact = span({ class: 'shelter-info' }, [text('[contact]')]);
 
         const driveTitle = p({class: 'title'}, [text('[drive title]')]);
         const driveInfo = div({class: 'info'}, [
-            div({class: 'loc'}, [text('Location: '), span({ class: 'shelter-info' }, [text('[location]')])]),
-            div({class: 'manager'}, [text('Manager '), span({ class: 'shelter-info' }, [text('[manager]')])]),
-            div({class: 'contact'}, [text('Contact info: '), span({ class: 'shelter-info' }, [text('[contact info]')])]),
-            div({class: 'rating'}, [text('Rating: '), span({ class: 'donor-info' }, [text('[rating]')])])
+            div({class: 'loc'}, [text('Location: '), location]),
+            div({class: 'manager'}, [text('Manager '), manager]),
+            div({class: 'contact'}, [text('Contact info: '), contact])
         ]);
-        const requirements = [];
-        for (let i = 0; i < 6; i++) {
-            const requirement = div({class: 'requirement'}, [
-                p({class: 'title'}, [text('[requirement]')]),
-                div({class: 'completion-cont'}, [
-                    div({class: 'completion'}, [div({class: 'completion-bar' + (i === 3 ? ' finished' : '')})])
-                ])
-            ]);
-            requirements.push(requirement);
-        }
-        const requirementsCont = div({class: 'requirements'}, requirements);
-        const donateButton = button({id: 'donate', class: 'btn donor-btn small'}, [text('Donate')]);
+        const requirementsCont = div({class: 'requirements'}, []);
         target.appendChild(
-            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont, donateButton])
+            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont])
         );
+
+        // wait only after we've rendered placeholders
+        const drive = await fetchDrive(driveId);
+        driveTitle.innerHTML = drive.name;
+        contact.innerHTML = drive.contact_info;
+        location.innerHTML = drive.location;
+        manager.innerHTML = drive.manager;
+
+        const requirements = await fetchDriveRequirements(driveId);
+        requirements.forEach(requirement => renderRequirement(requirement, requirementsCont));
     };
 
     const renderSearchResultsPage = (target, search) => {

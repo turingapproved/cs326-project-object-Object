@@ -24,7 +24,8 @@ const Drives = (database) => {
                         FROM REQUIREMENT
                         JOIN DRIVE ON DRIVE_ID = DRIVE.ID
                         WHERE DRIVE.ID = $1
-                    ) AS PERCENT;
+                    ) 
+                    * 100 AS PERCENT;
                 `,
                 [id]
             );
@@ -35,6 +36,9 @@ const Drives = (database) => {
         },
         search: async (query) => {
             return await database.rows(`SELECT * FROM DRIVE WHERE NAME LIKE '%' || $1 || '%'`, [query]);
+        },
+        getRequirements: async (id) => {
+            return await database.rows('SELECT * FROM REQUIREMENT WHERE DRIVE_ID = $1', [id]);
         }
     }
 }
