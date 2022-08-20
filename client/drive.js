@@ -83,3 +83,10 @@ export const fetchDriveRequirements = async (driveId) => {
     const res = await fetch(`drive/${driveId}/requirements`);
     return await res.json();
 };
+
+export const deleteDrive = async (id) => {
+    const res = await fetch(`drive/${id}`, {
+        method: 'DELETE'
+    });
+    return await res.json();
+}

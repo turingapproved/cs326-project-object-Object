@@ -156,6 +156,16 @@ app.get(
     const { driveId } = req.params;
     res.json(await drives.getRequirements(driveId)).end();
   }
+);
+
+app.delete(
+  '/drive/:driveId',
+  checkLoggedIn,
+  async (req, res) => {
+    const { driveId } = req.params;
+    await drives.delete(driveId);
+    res.json({ status: 'success' }).end();
+  }
 )
 
 app.post(

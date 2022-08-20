@@ -1,6 +1,6 @@
 import { div, p, button, text, form, label, input, applyMarginTop, applyWidth, makeElement, span } from "./utils.js";
 import { State } from "./state.js";
-import { renderRecentlyCreated, renderRecentlyViewed, createDrive, renderSearchResults, fetchDrive, fetchDriveRequirements } from "./drive.js";
+import { renderRecentlyCreated, renderRecentlyViewed, createDrive, renderSearchResults, fetchDrive, fetchDriveRequirements, deleteDrive } from "./drive.js";
 import { login, register } from "./auth.js";
 import { renderRequirement } from "./requirement.js";
 
@@ -155,6 +155,7 @@ const App = () => {
     const renderDrivePage = async (target, driveId) => {
         target.innerHTML = "";
         applyWidth(target, "70%");
+        const user = state.get('user');''
 
         const location = span({ class: 'shelter-info' }, [text('[location]')]);
         const manager = span({ class: 'shelter-info' }, [text('[manager]')]);
@@ -167,8 +168,14 @@ const App = () => {
             div({class: 'contact'}, [text('Contact info: '), contact])
         ]);
         const requirementsCont = div({class: 'requirements'}, []);
+        const deleteButton = button({id: 'delete', class: 'btn danger-btn small'}, [text('Delete')]);
+        deleteButton.addEventListener('click', async e => {
+            await deleteDrive(driveId);
+            renderHomePage(target);
+        });
+        const outerCont = div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont]);
         target.appendChild(
-            div({class: 'drive-page'}, [driveTitle, driveInfo, requirementsCont])
+            outerCont
         );
 
         // wait only after we've rendered placeholders
@@ -177,6 +184,11 @@ const App = () => {
         contact.innerHTML = drive.contact_info;
         location.innerHTML = drive.location;
         manager.innerHTML = drive.manager;
+
+        // Only show the delete button if the drive belongs to the user
+        if (drive.creator_id === user.id) {
+            outerCont.appendChild(deleteButton);
+        }
 
         const requirements = await fetchDriveRequirements(driveId);
         requirements.forEach(requirement => renderRequirement(requirement, requirementsCont));

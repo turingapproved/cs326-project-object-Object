@@ -39,6 +39,12 @@ const Drives = (database) => {
         },
         getRequirements: async (id) => {
             return await database.rows('SELECT * FROM REQUIREMENT WHERE DRIVE_ID = $1', [id]);
+        },
+        delete: async (id) => {
+            // Clear potential references 
+            await database.query('DELETE FROM DRIVE_VIEW WHERE DRIVE_ID = $1', [id]);
+            await database.query('DELETE FROM REQUIREMENT WHERE DRIVE_ID = $1', [id]);
+            await database.query('DELETE FROM DRIVE WHERE ID = $1', [id]);
         }
     }
 }
